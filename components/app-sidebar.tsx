@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   BookOpen,
   Bot,
@@ -19,12 +19,12 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +33,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { LawyerService } from "@/service/lawyer.service";
 
 const data = {
   user: {
@@ -74,7 +75,7 @@ const data = {
       url: "/app/documents",
       icon: FileStack,
       isActive: false,
-      items: []
+      items: [],
     },
     {
       title: "Tasks",
@@ -130,7 +131,7 @@ const data = {
       title: "AI",
       url: "#",
       icon: BrainCircuit,
-      items: []
+      items: [],
     },
     {
       title: "Configurações",
@@ -185,9 +186,40 @@ const data = {
       icon: Map,
     },
   ],
+};
+
+interface UserDetails {
+  name: string;
+  username: string;
+  email: string;
+  avatar: string;
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [userDetails, setUserDetails] = React.useState<UserDetails>({
+    email: "",
+    name: "",
+    username: "",
+    avatar: "",
+  });
+
+  React.useEffect(() => {
+    const onGetUserDetails = async () => {
+      try {
+        const user = await LawyerService.getLawyer();
+        setUserDetails({
+          username: user.username,
+          avatar: user.avatar ?? "",
+          email: user.email,
+          name: user.name,
+        });
+      } catch (error) {
+        console.log("AppSideBar - onGetUserDetails: ");
+      }
+    };
+
+    onGetUserDetails();
+  }, []);
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -213,8 +245,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userDetails} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
