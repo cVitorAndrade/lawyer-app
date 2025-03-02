@@ -1,4 +1,4 @@
-import { Api } from "@/providers/api";
+import { Api } from "@/providers";
 
 export const AuthService = {
   async signIn(payload: ILogin) {
