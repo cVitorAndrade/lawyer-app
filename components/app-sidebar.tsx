@@ -4,9 +4,11 @@ import * as React from "react"
 import {
   BookOpen,
   Bot,
+  BrainCircuit,
   BriefcaseBusiness,
   CalendarRange,
   Command,
+  FileStack,
   FileText,
   Frame,
   KanbanSquare,
@@ -44,21 +46,8 @@ const data = {
       title: "Dashboard",
       url: "#",
       icon: LayoutDashboard,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      isActive: false,
+      items: [],
     },
     {
       title: "Casos",
@@ -81,8 +70,15 @@ const data = {
       ],
     },
     {
+      title: "Documentos",
+      url: "/app/documents",
+      icon: FileStack,
+      isActive: false,
+      items: []
+    },
+    {
       title: "Tasks",
-      url: "#",
+      url: "/app/tasks",
       icon: KanbanSquare,
       isActive: false,
       items: [
@@ -102,23 +98,10 @@ const data = {
     },
     {
       title: "Compromissos",
-      url: "#",
+      url: "/app/appointments",
       icon: CalendarRange,
       isActive: false,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      items: [],
     },
     {
       title: "Modelos",
@@ -142,6 +125,12 @@ const data = {
           url: "#",
         },
       ],
+    },
+    {
+      title: "AI",
+      url: "#",
+      icon: BrainCircuit,
+      items: []
     },
     {
       title: "Configurações",
