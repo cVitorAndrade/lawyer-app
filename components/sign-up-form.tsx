@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { LawyerService } from "@/service/lawyer.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function SignUpForm({
   className,

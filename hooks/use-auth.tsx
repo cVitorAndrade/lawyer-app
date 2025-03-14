@@ -3,12 +3,8 @@ import { AuthService } from "@/service/auth.service";
 
 export function useAuth() {
   const onAuth = async ({ email, password }: ILogin) => {
-    try {
-      const { access_token } = await AuthService.signIn({ email, password });
-      await setBearerToken(access_token);
-    } catch (error) {
-      console.log("useAuth - onAuth: ", error);
-    }
+    const { access_token } = await AuthService.signIn({ email, password });
+    setBearerToken(access_token);
   };
 
   return { onAuth };

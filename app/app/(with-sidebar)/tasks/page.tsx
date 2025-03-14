@@ -40,7 +40,7 @@ export default function Tasks() {
 
                 <TaskCard.SubtaskProgress
                   percentage={50}
-                  indicatorColor="#f21245"
+                  indicatorColor="bg-[#f21245]"
                 />
 
                 <TaskCard.SubtaskSection>
@@ -113,7 +113,7 @@ export default function Tasks() {
 
               <TaskCard.SubtaskProgress
                 percentage={50}
-                indicatorColor="#f21245"
+                indicatorColor="bg-[#f21245]"
               />
 
               <TaskCard.SubtaskSection>
@@ -145,7 +145,7 @@ export default function Tasks() {
               <TaskCard.AddSubtask />
             </TaskCard.Footer>
           </TaskCard.Root>
-          
+
           <TaskCard.Root>
             <TaskCard.Header>
               <TaskCard.Title color="#f21245" title="Development Website" />
@@ -174,7 +174,7 @@ export default function Tasks() {
 
               <TaskCard.SubtaskProgress
                 percentage={50}
-                indicatorColor="#f21245"
+                indicatorColor="bg-[#f21245]"
               />
 
               <TaskCard.SubtaskSection>

@@ -11,4 +11,9 @@ export const LawyerService = {
     const { data } = await Api.get<ILawyer>("lawyer");
     return data;
   },
+
+  async getAllLawyers() {
+    const { data } = await Api.get<ILawyer[]>("/lawyer/all");
+    return data;
+  },
 };

@@ -3,8 +3,18 @@ import { Dialog } from "../ui/dialog";
 
 interface ModalRootProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function ModalRoot({ children }: ModalRootProps) {
-  return <Dialog></Dialog>;
+export default function ModalRoot({
+  children,
+  isOpen,
+  onOpenChange,
+}: ModalRootProps) {
+  return (
+    <Dialog modal open={isOpen} onOpenChange={onOpenChange}>
+      {children}
+    </Dialog>
+  );
 }
