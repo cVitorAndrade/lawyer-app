@@ -18,7 +18,7 @@ import { CaseService } from "@/service/case.service";
 import { IInvite } from "@/interfaces/IInvite";
 import { ICase } from "@/interfaces/ICase";
 import { ILawyer } from "@/interfaces/ILawyer";
-import { useAvatarUrl } from "@/hooks/use-avatar-url";
+import { getAvatarUrl } from "@/hooks/use-avatar-url";
 
 interface ShowNotificationsProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -128,7 +128,7 @@ export default function ShowNotifications({
                 <Notification.Root key={id}>
                   <Notification.CreatorAvatar
                     name={invitedBy.name}
-                    imageUrl={useAvatarUrl(invitedBy.avatar)}
+                    imageUrl={getAvatarUrl(invitedBy.avatar)}
                   />
 
                   <Notification.DetailsSection>
