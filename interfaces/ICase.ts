@@ -1,3 +1,6 @@
+import { IClient } from "./IClient";
+import { ILawyer } from "./ILawyer";
+
 type CaseType = "ADMINISTRATIVE" | "JUDICIAL";
 type CasePriority = "LOW" | "MEDIUM" | "HIGH";
 type CaseStatus = "IN_PROGRESS" | "FINISHED" | "CANCELED" | "PAUSED";
@@ -15,4 +18,7 @@ export interface ICase extends ICreateCase {
   createdAt: string;
   updatedAt: string;
   createdById: string;
+  createdBy: ILawyer;
+  lawyers: ILawyer[];
+  clients: IClient[];
 }
