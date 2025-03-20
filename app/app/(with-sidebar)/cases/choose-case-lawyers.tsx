@@ -1,10 +1,8 @@
 import LawyerMultiSelect from "@/components/fancy-multi-select";
 import { Button } from "@/components/ui/button";
 import { ILawyer } from "@/interfaces/ILawyer";
-import { cn } from "@/lib/utils";
-import { HTMLAttributes, useState } from "react";
 
-interface ChooseCaseLawyersProps extends HTMLAttributes<HTMLDivElement> {
+interface ChooseCaseLawyersProps {
   onFinish: (selectedLawyers: ILawyer[]) => void;
   onPreviousStep: () => void;
   selectedLawyers: ILawyer[];
@@ -14,13 +12,11 @@ interface ChooseCaseLawyersProps extends HTMLAttributes<HTMLDivElement> {
 export default function ChooseCaseLawyers({
   onFinish,
   onPreviousStep,
-  className,
   selectedLawyers,
   setSelectedLawyers,
 }: ChooseCaseLawyersProps) {
-
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div className="flex flex-col gap-4">
       <LawyerMultiSelect
         selectedLawyers={selectedLawyers}
         setSelectedLawyers={setSelectedLawyers}
