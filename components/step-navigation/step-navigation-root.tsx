@@ -7,5 +7,5 @@ interface StepNavigationRootProps extends HTMLAttributes<HTMLDivElement> {
 export default function StepNavigationRoot({
   children,
 }: StepNavigationRootProps) {
-  return <div className="w-full flex items-center gap-4">{children}</div>;
+  return <div className="w-full flex items-start gap-4">{children}</div>;
 }

@@ -7,5 +7,7 @@ interface StepNavigationItemProps extends HTMLAttributes<HTMLDivElement> {
 export default function StepNavigationItem({
   children,
 }: StepNavigationItemProps) {
-  return <div className="flex flex-1 flex-col gap-1 items-start">{children}</div>;
+  return (
+    <div className="flex flex-1 flex-col gap-1 items-start">{children}</div>
+  );
 }
