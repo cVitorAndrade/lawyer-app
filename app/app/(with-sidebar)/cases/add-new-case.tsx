@@ -9,6 +9,11 @@ import { toast } from "sonner";
 import { CaseLawyerService } from "@/service/case-lawyer.service";
 import { LawyerService } from "@/service/lawyer.service";
 import { InviteService } from "@/service/invite.service";
+import ClientDetailsForm from "./client-details-form";
+import ClientAddressForm from "./client-address-form";
+import { ClientService } from "@/service/client.service";
+import { AddressService } from "@/service/address.service";
+import { CaseClientService } from "@/service/case-client.service";
 
 interface AddNewCaseProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -19,9 +24,10 @@ interface CaseCreationStep {
 }
 
 const caseCreationSteps: CaseCreationStep[] = [
-  { title: "Case details" },
-  // { title: "Client details" },
-  { title: "Members" },
+  { title: "Detalhes do caso" },
+  { title: "Dados do cliente" },
+  { title: "Endereço do cliente" },
+  { title: "Membros" },
 ];
 
 interface CaseDetails {
@@ -29,6 +35,23 @@ interface CaseDetails {
   description: string;
   priority: "LOW" | "MEDIUM" | "HIGH";
   type: "ADMINISTRATIVE" | "JUDICIAL";
+}
+
+interface ClientDetails {
+  name: string;
+  email: string;
+  telephone: string;
+  birthDate: Date;
+}
+
+interface ClientAddress {
+  postalCode: string;
+  city: string;
+  neighborhood: string;
+  state: string;
+  street: string;
+  number: string;
+  complement: string;
 }
 
 export default function AddNewCase({ children }: AddNewCaseProps) {
@@ -40,6 +63,23 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
     description: "",
     type: "ADMINISTRATIVE",
     priority: "HIGH",
+  });
+
+  const [clientDetails, setClientDetails] = useState<ClientDetails>({
+    birthDate: new Date(),
+    email: "",
+    name: "",
+    telephone: "",
+  });
+
+  const [clientAddress, setClientAddress] = useState<ClientAddress>({
+    city: "",
+    complement: "",
+    neighborhood: "",
+    number: "",
+    postalCode: "",
+    state: "",
+    street: "",
   });
 
   const [selectedLawyersToCase, setSelectedLawyersToCase] = useState<ILawyer[]>(
@@ -58,6 +98,22 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
     setCurrentStep(currentStep + 1);
   };
 
+  const onFinishCaseDetailsStep = (values: CaseDetails) => {
+    setCaseDetails(values);
+    onNextStep();
+  };
+
+  const onFinishClientDetailsStep = (values: ClientDetails) => {
+    setClientDetails(values);
+    console.log({ values });
+    onNextStep();
+  };
+
+  const onFinishClientAddressStep = (values: ClientAddress) => {
+    setClientAddress(values);
+    onNextStep();
+  };
+
   const onCreateCase = async () => {
     try {
       const createdCase = await CaseService.createCase({
@@ -65,10 +121,27 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
         status: "IN_PROGRESS",
       });
 
-      await InviteService.createInvites({
-        caseId: createdCase.id,
-        lawyers: selectedLawyersToCase,
-      });
+      const [_, client] = await Promise.all([
+        InviteService.createInvites({
+          caseId: createdCase.id,
+          lawyers: selectedLawyersToCase,
+        }),
+        ClientService.createClient(clientDetails),
+      ]);
+
+      const [address, caseclient] = await Promise.all([
+        AddressService.createAddress({
+          country: "Brasil",
+          name: "casa",
+          ownerId: client.id,
+          ...clientAddress,
+        }),
+
+        CaseClientService.createCaseClient({
+          caseId: createdCase.id,
+          clientId: client.id,
+        }),
+      ]);
 
       toast.success(`Case was successfully created!`);
     } catch (error) {
@@ -77,12 +150,9 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
         description:
           "An error occurred while trying to create the case. Please try again later.",
       });
+    } finally {
+      onCloseModal();
     }
-  };
-
-  const onFinishCaseDetailsStep = (values: CaseDetails) => {
-    setCaseDetails(values);
-    onNextStep();
   };
 
   const onFinishChooseCaseMembersStep = async (lawyers: ILawyer[]) => {
@@ -106,6 +176,27 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
     setSelectedLawyersToCase([]);
   };
 
+  const formComponents = [
+    <CaseDetailsForm key="case-details" onFinish={onFinishCaseDetailsStep} />,
+    <ClientDetailsForm
+      key="client-details"
+      onPreviousStep={onPreviousStep}
+      onFinish={onFinishClientDetailsStep}
+    />,
+    <ClientAddressForm
+      key="client-address"
+      onPreviousStep={onPreviousStep}
+      onFinish={onFinishClientAddressStep}
+    />,
+    <ChooseCaseLawyers
+      key="choose-lawyers"
+      onFinish={onFinishChooseCaseMembersStep}
+      onPreviousStep={onPreviousStep}
+      setSelectedLawyers={setSelectedLawyersToCase}
+      selectedLawyers={selectedLawyersToCase}
+    />,
+  ];
+
   return (
     <Modal.Root
       onOpenChange={(open) => {
@@ -115,7 +206,7 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
       isOpen={isOpen}
     >
       <Modal.OpenButton>{children}</Modal.OpenButton>
-      <Modal.Container className="max-w-xl w-full">
+      <Modal.Container className="max-w-2xl w-full">
         <Modal.Header>
           <Modal.Title text="Título desse meu modal" />
           <Modal.Description text="Descrição desse meu modal" />
@@ -135,34 +226,14 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
           ))}
         </StepNavigation.Root>
 
-        <CaseDetailsForm
-          onFinish={onFinishCaseDetailsStep}
-          className={currentStep !== 1 ? "hidden" : ""}
-        />
-
-        <ChooseCaseLawyers
-          onFinish={onFinishChooseCaseMembersStep}
-          onPreviousStep={onPreviousStep}
-          className={currentStep !== 2 ? "hidden" : ""}
-          setSelectedLawyers={setSelectedLawyersToCase}
-          selectedLawyers={selectedLawyersToCase}
-        />
-
-        {/* <Modal.Footer>
-          {showBackButton && (
-            <Button onClick={() => setCurrentStep(currentStep - 1)}>
-              Back
-            </Button>
-          )}
-          {showNextButton && (
-            <Button onClick={() => setCurrentStep(currentStep + 1)}>
-              Next
-            </Button>
-          )}
-          {showCreateCaseButton && (
-            <Button onClick={() => alert("created")}>Create</Button>
-          )}
-        </Modal.Footer> */}
+        {formComponents.map((component, index) => (
+          <div
+            className={currentStep !== index + 1 ? "hidden" : ""}
+            key={index}
+          >
+            {component}
+          </div>
+        ))}
       </Modal.Container>
     </Modal.Root>
   );
