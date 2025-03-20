@@ -29,14 +29,11 @@ interface CaseDetails {
   type: "ADMINISTRATIVE" | "JUDICIAL";
 }
 
-interface CaseDetailsFormProps extends HTMLAttributes<HTMLDivElement> {
+interface CaseDetailsFormProps {
   onFinish: (values: CaseDetails) => void;
 }
 
-export default function CaseDetailsForm({
-  onFinish,
-  className,
-}: CaseDetailsFormProps) {
+export default function CaseDetailsForm({ onFinish }: CaseDetailsFormProps) {
   const caseDetailsSchema = z.object({
     title: z.string().nonempty(),
     description: z.string().nonempty(),
@@ -59,20 +56,67 @@ export default function CaseDetailsForm({
   };
 
   return (
-    <div className={className}>
-      <Form {...caseDetailsForm}>
-        <form
-          onSubmit={caseDetailsForm.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
-        >
+    <Form {...caseDetailsForm}>
+      <form
+        onSubmit={caseDetailsForm.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
+        <FormField
+          control={caseDetailsForm.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={caseDetailsForm.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea {...field} className="resize-none" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex gap-4">
           <FormField
             control={caseDetailsForm.control}
-            name="title"
+            name="type"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
+              <FormItem className="flex-1">
+                <FormLabel>Type</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ADMINISTRATIVE">
+                        <span className="text-blue-800 bg-blue-100/50 items-center text-sm w-fit p-1 font-semibold rounded-lg">
+                          Administrative
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="JUDICIAL">
+                        <span className="text-purple-800 bg-purple-100/50 items-center text-sm w-fit p-1 font-semibold rounded-lg">
+                          Judicial
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,99 +125,50 @@ export default function CaseDetailsForm({
 
           <FormField
             control={caseDetailsForm.control}
-            name="description"
+            name="priority"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
+              <FormItem className="flex-1">
+                <FormLabel>Priority</FormLabel>
                 <FormControl>
-                  <Textarea {...field} className="resize-none" />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="LOW">
+                        <span className="flex gap-2 items-center text-sm font-normal">
+                          <ArrowDown size={14} />
+                          Low
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="MEDIUM">
+                        <span className="flex gap-2 items-center text-sm font-normal">
+                          <ArrowRight size={14} />
+                          Medium
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="HIGH">
+                        <span className="flex gap-2 items-center text-sm font-normal">
+                          <ArrowUp size={14} />
+                          High
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+        </div>
 
-          <div className="flex gap-4">
-            <FormField
-              control={caseDetailsForm.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Type</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ADMINISTRATIVE">
-                          <span className="text-blue-800 bg-blue-100/50 items-center text-sm w-fit p-1 font-semibold rounded-lg">
-                            Administrative
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="JUDICIAL">
-                          <span className="text-purple-800 bg-purple-100/50 items-center text-sm w-fit p-1 font-semibold rounded-lg">
-                            Judicial
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={caseDetailsForm.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Priority</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="LOW">
-                          <span className="flex gap-2 items-center text-sm font-normal">
-                            <ArrowDown size={14} />
-                            Low
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="MEDIUM">
-                          <span className="flex gap-2 items-center text-sm font-normal">
-                            <ArrowRight size={14} />
-                            Medium
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="HIGH">
-                          <span className="flex gap-2 items-center text-sm font-normal">
-                            <ArrowUp size={14} />
-                            High
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="flex justify-end space-x-2">
-            <Button type="submit">Next</Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+        <div className="flex justify-end space-x-2">
+          <Button type="submit">Next</Button>
+        </div>
+      </form>
+    </Form>
   );
 }
