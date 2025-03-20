@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import CasesTable from "./cases-table";
-import { cases, columns } from "./cases-table-columns";
+import { columns } from "./cases-table-columns";
 import { ChevronDown, Plus } from "lucide-react";
 import { MetricCard } from "@/components/metric-card";
 import {
@@ -172,7 +172,7 @@ export default function Cases() {
       </div>
 
       <div>
-        <CasesTable data={cases} columns={columns} />
+        <CasesTable data={lawyerCases} columns={columns} />
       </div>
     </div>
   );
