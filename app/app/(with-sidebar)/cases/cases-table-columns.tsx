@@ -118,7 +118,7 @@ export const columns: ColumnDef<ICase>[] = [
     cell: ({ row }) => (
       <div className="flex gap-4 items-center">
         <div className="size-8">
-          <Avatar className="h-8 w-8 rounded-lg">
+          <Avatar className="h-8 w-8 rounded-full">
             <AvatarImage
               src={getAvatarUrl(row.original.createdBy.avatar) || ""}
               alt={row.original.createdBy.name}
@@ -148,9 +148,9 @@ export const columns: ColumnDef<ICase>[] = [
           <TooltipProvider key={id}>
             <Tooltip delayDuration={300}>
               <TooltipTrigger>
-                <Avatar className="h-8 w-8 rounded-lg">
+                <Avatar className="h-8 w-8 rounded-full border-2 border-white">
                   <AvatarImage
-                    src={getAvatarUrl(avatar) || ""}
+                    src={getAvatarUrl(avatar)}
                     alt={name}
                   />
                   <AvatarFallback className="rounded-lg">

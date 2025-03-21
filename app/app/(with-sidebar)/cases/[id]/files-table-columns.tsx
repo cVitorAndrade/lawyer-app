@@ -1,49 +1,30 @@
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ColumnDef } from '@tanstack/react-table'
-import { File as FileIcon, MoreHorizontal } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
+import { ICaseFile } from "@/interfaces/ICaseFile";
+import { formatDate } from "@/lib/date-utils";
+import { formatFileSize } from "@/lib/file-utils";
+import { CaseFileService } from "@/service/case-file.service";
+import { ColumnDef } from "@tanstack/react-table";
+import { File as FileIcon, MoreHorizontal } from "lucide-react";
 
-type File = {
-  id: string
-  filename: string
-  size: string
-  createdAt: string
-  uploadedBy: string
-}
- 
-export const files: File[] = [
+export const columns: ColumnDef<ICaseFile>[] = [
   {
-    id: '728ed52f',
-    filename: 'filename.pdf',
-    size: '512 KB',
-    createdAt: 'Dez 25, 2024',
-    uploadedBy: 'John Doe'
-  },
-  {
-    id: '489e1d42',
-    filename: 'filename.jpg',
-    size: '512 KB',
-    createdAt: 'Dez 25, 2024',
-    uploadedBy: 'John Doe'
-  },
-  {
-    id: '72ed52f',
-    filename: 'filename.docx',
-    size: '512 KB',
-    createdAt: 'Dez 25, 2024',
-    uploadedBy: 'John Doe'
-  },
-]
-
-export const columns: ColumnDef<File>[] = [
-  {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -60,117 +41,102 @@ export const columns: ColumnDef<File>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'filename',
-    header: 'File name',
-    cell: (({ row }) => (
-      <div
-        className="flex gap-4 items-center"
-      >
-        <div
-          className="bg-zinc-300 rounded-full size-8 flex justify-center items-center"
-        >
+    accessorKey: "originalname",
+    header: "Nome do arquivo",
+    cell: ({ row }) => (
+      <div className="flex gap-4 items-center">
+        <div className="sm:flex bg-zinc-300 rounded-full size-8 hidden justify-center items-center">
           <FileIcon size={16} />
         </div>
         <div>
-          <h4
-            className="font-semibold"
-          >
-            {row.original.filename}
-          </h4>
-          <p
-            className="text-xs font-semibold text-neutral-500"
-          >
-            {row.original.size}
+          <h4 className="font-semibold">{row.original.originalname}</h4>
+          <p className="text-xs font-semibold text-neutral-500">
+            {formatFileSize(row.original.size)}
           </p>
         </div>
       </div>
-    ))
+    ),
   },
   {
-    accessorKey: 'size',
-    header: 'File size',
-    cell: (({ row }) => (
+    accessorKey: "size",
+    header: "Tamanho do arquivo",
+    cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">
-        {row.original.size}
+        {formatFileSize(row.original.size)}
       </span>
-    ))
+    ),
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Date uploaded',
-    cell: (({ row }) => (
+    accessorKey: "createdAt",
+    header: "Date de upload",
+    cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">
-        {row.original.createdAt}
+        {formatDate(row.original.createdAt)}
       </span>
-    ))
+    ),
   },
   {
-    accessorKey: 'uploadedBy',
-    header: 'Uploaded by',
-    cell: (({ row }) => (
-      <div
-        className="flex gap-4 items-center"
-      >
-        <div
-          className='size-8'
-        >
-          <img 
-            src="https://github.com/cvitorandrade.png"
-            alt="user image"
-            className="rounded-full size-8"
-          />
+    accessorKey: "uploadedBy",
+    header: "Enviado por",
+    cell: ({ row }) => (
+      <div className="flex gap-4 items-center">
+        <div className="size-8">
+          <Avatar className="h-8 w-8 rounded-full border-2 border-white">
+            <AvatarImage src={getAvatarUrl(row.original.uploadedBy.avatar)} />
+            <AvatarFallback className="rounded-lg">
+              {getAvatarFallback(row.original.uploadedBy.name)}
+            </AvatarFallback>
+          </Avatar>
         </div>
         <div>
-          <h4
-            className="font-semibold text-neutral-700"
-          >
-            {row.original.uploadedBy}
+          <h4 className="font-semibold text-neutral-700">
+            {row.original.uploadedBy.name}
           </h4>
-          <p
-            className="text-xs font-semibold text-neutral-500"
-          >
-            john@email.com
+          <p className="text-xs font-semibold text-neutral-500">
+            {row.original.uploadedBy.email}
           </p>
         </div>
       </div>
-    ))
+    ),
   },
-  // {
-  //   accessorKey: "email",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Email
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     )
-  //   },
-  // },
-  // {
-  //   accessorKey: "amount",
-  //   header: () => <div className="text-right">Amount</div>,
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"))
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(amount)
- 
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
   {
-    id: 'actions',
+    id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const payment = row.original;
+
+      const onDownloadCaseFile = async (id: string) => {
+        try {
+          const response = await CaseFileService.downloadCaseFile(id);
+
+          const blob = new Blob([response.data], {
+            type: response.headers["content-type"],
+          });
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+
+          const contentDisposition = response.headers["content-disposition"];
+          let filename = "arquivo_desconhecido";
+
+          if (contentDisposition) {
+            const match = contentDisposition.match(/filename="(.+)"/);
+            if (match && match[1]) {
+              filename = match[1];
+            }
+          }
+
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.log("FilesTableColumns - onDownloadCaseFile: ", error);
+        }
+      };
+
       return (
-        <div
-          className="w-full flex justify-end"
-        >
+        <div className="w-full flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -186,12 +152,16 @@ export const columns: ColumnDef<File>[] = [
                 Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onDownloadCaseFile(row.original.id)}
+              >
+                Fazer download
+              </DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      )
+      );
     },
   },
-]
+];

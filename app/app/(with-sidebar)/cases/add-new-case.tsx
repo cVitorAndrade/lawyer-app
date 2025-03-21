@@ -105,7 +105,6 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
 
   const onFinishClientDetailsStep = (values: ClientDetails) => {
     setClientDetails(values);
-    console.log({ values });
     onNextStep();
   };
 
