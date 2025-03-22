@@ -93,10 +93,10 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "client",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Client" />
+      <DataTableColumnHeader column={column} title="Cliente" />
     ),
     cell: ({ row }) => (
-      <span className="text-neutral-700 font-medium">
+      <span className="text-neutral-700 font-medium max-w-32 block truncate">
         {row.original.clients[0]?.name || "Sem cliente"}
       </span>
     ),
@@ -104,7 +104,7 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Título do caso" />
     ),
     cell: ({ row }) => (
       <span className="text-neutral-700 font-medium truncate block max-w-32">
@@ -114,7 +114,7 @@ export const columns: ColumnDef<ICase>[] = [
   },
   {
     accessorKey: "createdBy",
-    header: "Created by",
+    header: "Criado por",
     accessorFn: (row) => row.createdBy.name,
     cell: ({ row }) => (
       <div className="flex gap-4 items-center">
@@ -133,7 +133,7 @@ export const columns: ColumnDef<ICase>[] = [
           <h4 className="font-semibold text-neutral-700">
             {row.original.createdBy.name}
           </h4>
-          <p className="text-xs font-semibold text-neutral-500">
+          <p className="text-xs font-semibold truncate block text-neutral-500 max-w-24">
             {row.original.createdBy.email}
           </p>
         </div>
@@ -142,7 +142,7 @@ export const columns: ColumnDef<ICase>[] = [
   },
   {
     accessorKey: "assignedUsers",
-    header: "Assigned Users",
+    header: "Participantes",
     cell: ({ row }) => (
       <div className="flex relative -space-x-2 group">
         {row.original.lawyers.map(({ id, avatar, name }) => (
@@ -166,7 +166,7 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
+      <DataTableColumnHeader column={column} title="Tipo" />
     ),
     cell: ({ row }) => (
       <div
@@ -200,7 +200,7 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "priority",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+      <DataTableColumnHeader column={column} title="Prioridade" />
     ),
     cell: ({ row }) => (
       <div className="flex gap-2 items-center text-sm font-normal">
@@ -212,7 +212,7 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date created" />
+      <DataTableColumnHeader column={column} title="Criado em" />
     ),
     cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">
@@ -223,7 +223,7 @@ export const columns: ColumnDef<ICase>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last update" />
+      <DataTableColumnHeader column={column} title="Atualizado em" />
     ),
     cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">

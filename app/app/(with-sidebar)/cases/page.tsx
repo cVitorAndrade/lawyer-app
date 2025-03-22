@@ -15,15 +15,16 @@ import AddNewCase from "./add-new-case";
 import { useEffect, useState } from "react";
 import { CaseService } from "@/service/case.service";
 import { ICase } from "@/interfaces/ICase";
+import CasesMetrics from "./[id]/cases-metrics";
 
 export default function Cases() {
-  const [lawyerCases, setLawyerCases]= useState<ICase[]>([])
+  const [lawyerCases, setLawyerCases] = useState<ICase[]>([]);
 
   useEffect(() => {
     const onGetLawyerCases = async () => {
       try {
         const cases = await CaseService.getAllLawyerCases();
-        setLawyerCases(cases)
+        setLawyerCases(cases);
       } catch (error) {
         console.log("Cases - onGetLawyerCases: ", error);
       }
@@ -33,7 +34,7 @@ export default function Cases() {
   }, []);
   return (
     <div>
-      <div className="grid gap-4">
+      {/* <div className="grid gap-4">
         <div className="grid grid-cols-4 gap-4">
           <MetricCard.Root>
             <MetricCard.Header>
@@ -151,7 +152,9 @@ export default function Cases() {
             <MetricCard.Footer></MetricCard.Footer>
           </MetricCard.Root>
         </div>
-      </div>
+      </div> */}
+
+      <CasesMetrics />
 
       <div className="flex items-center justify-between gap-4 border-b py-4">
         <div className="flex flex-col gap-1">

@@ -1,52 +1,75 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table'
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-import { 
+import {
   ColumnDef,
   ColumnFiltersState,
-  flexRender, 
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   VisibilityState,
-  useReactTable, 
-  getSortedRowModel
-} from '@tanstack/react-table'
-import { useRouter } from 'next/navigation'
+  useReactTable,
+  getSortedRowModel,
+} from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 
-import { useState } from 'react'
-import { DataTablePagination } from './cases-table-pagination'
-import { Settings2 } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { DataTablePagination } from "./cases-table-pagination";
+import { Settings2 } from "lucide-react";
+import { useBreakpoints } from "@/hooks/use-breakpoints";
 
 interface CasesTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
-export default function CasesTable<TData, TValue> ({
+export default function CasesTable<TData, TValue>({
   columns,
-  data
+  data,
 }: CasesTableProps<TData, TValue>) {
-  const router = useRouter()
+  const router = useRouter();
 
   const onNavigateToCaseDetailsPage = (id: string) => {
-    router.push(`/app/cases/${id}`)
-  }
+    router.push(`/app/cases/${id}`);
+  };
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+  const {
+    isAtMostMobile,
+    isAtLeastTablet,
+    isAtLeastDesktop,
+    isAtLeastLargeScreen,
+    isAtLeastLargePlusScreen,
+    isAtLeastExtraLargeScreen,
+  } = useBreakpoints();
+
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    assignedUsers: isAtLeastDesktop,
+    createdBy: isAtLeastDesktop,
+    type: !isAtMostMobile,
+    priority: isAtLeastLargeScreen,
+    status: isAtLeastLargeScreen,
+    createdAt: isAtLeastLargeScreen,
+    updatedAt: isAtLeastLargePlusScreen,
+  });
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -62,17 +85,38 @@ export default function CasesTable<TData, TValue> ({
       columnFilters,
       columnVisibility,
       rowSelection,
-    }
-  })
+    },
+  });
+
+  useEffect(() => {
+    setColumnVisibility({
+      assignedUsers: isAtLeastDesktop,
+      createdBy: isAtLeastDesktop,
+      type: !isAtMostMobile,
+      priority: isAtLeastLargeScreen,
+      status: isAtLeastLargeScreen,
+      createdAt: isAtLeastLargeScreen,
+      updatedAt: isAtLeastLargePlusScreen,
+    });
+  }, [
+    isAtMostMobile,
+    isAtLeastTablet,
+    isAtLeastDesktop,
+    isAtLeastLargeScreen,
+    isAtLeastLargePlusScreen,
+    isAtLeastExtraLargeScreen,
+  ]);
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
-          value={table.getColumn('createdBy')?.getFilterValue() as string || ''}
+          value={
+            (table.getColumn("createdBy")?.getFilterValue() as string) || ""
+          }
           onChange={(event) =>
-            table.getColumn('createdBy')?.setFilterValue(event.target.value)
+            table.getColumn("createdBy")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -86,9 +130,7 @@ export default function CasesTable<TData, TValue> ({
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
+              .filter((column) => column.getCanHide())
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
@@ -101,7 +143,7 @@ export default function CasesTable<TData, TValue> ({
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -122,44 +164,48 @@ export default function CasesTable<TData, TValue> ({
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    //@ts-ignore
-                    onClick={() => onNavigateToCaseDetailsPage(row.original.id) }
-                    className='cursor-pointer'
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
-                  </TableCell>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  //@ts-ignore
+                  onClick={() => onNavigateToCaseDetailsPage(row.original.id)}
+                  className="cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
 
-      <div
-        className='mt-4'
-      >
+      <div className="mt-4">
         <DataTablePagination table={table} />
       </div>
     </div>
-  )
+  );
 }
