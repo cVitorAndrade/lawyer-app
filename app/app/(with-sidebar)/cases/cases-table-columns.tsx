@@ -30,6 +30,7 @@ import { DataTableColumnHeader } from "./cases-table-header";
 import { ICase } from "@/interfaces/ICase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
+import { formatDate } from "@/lib/date-utils";
 
 const statusStyle = {
   IN_PROGRESS: {
@@ -149,10 +150,7 @@ export const columns: ColumnDef<ICase>[] = [
             <Tooltip delayDuration={300}>
               <TooltipTrigger>
                 <Avatar className="h-8 w-8 rounded-full border-2 border-white">
-                  <AvatarImage
-                    src={getAvatarUrl(avatar)}
-                    alt={name}
-                  />
+                  <AvatarImage src={getAvatarUrl(avatar)} alt={name} />
                   <AvatarFallback className="rounded-lg">
                     {getAvatarFallback(row.original.createdBy.name)}
                   </AvatarFallback>
@@ -218,7 +216,7 @@ export const columns: ColumnDef<ICase>[] = [
     ),
     cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">
-        {row.original.createdAt}
+        {formatDate(row.original.createdAt)}
       </span>
     ),
   },
@@ -229,7 +227,7 @@ export const columns: ColumnDef<ICase>[] = [
     ),
     cell: ({ row }) => (
       <span className="text-neutral-700 font-medium">
-        {row.original.updatedAt}
+        {formatDate(row.original.updatedAt)}
       </span>
     ),
   },
