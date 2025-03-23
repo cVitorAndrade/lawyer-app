@@ -44,16 +44,11 @@ export const columns: ColumnDef<ICaseFile>[] = [
     accessorKey: "originalname",
     header: "Nome do arquivo",
     cell: ({ row }) => (
-      <div className="flex gap-4 items-center">
-        <div className="sm:flex bg-zinc-300 rounded-full size-8 hidden justify-center items-center">
-          <FileIcon size={16} />
-        </div>
-        <div>
-          <h4 className="font-semibold">{row.original.originalname}</h4>
-          <p className="text-xs font-semibold text-neutral-500">
-            {formatFileSize(row.original.size)}
-          </p>
-        </div>
+      <div>
+        <h4 className="font-semibold">{row.original.originalname}</h4>
+        <p className="text-xs font-semibold text-neutral-500">
+          {formatFileSize(row.original.size)}
+        </p>
       </div>
     ),
   },
