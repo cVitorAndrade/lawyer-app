@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { HTMLAttributes } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ptBR } from "date-fns/locale";

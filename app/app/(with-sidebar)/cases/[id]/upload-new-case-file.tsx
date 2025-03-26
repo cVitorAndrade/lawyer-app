@@ -66,7 +66,7 @@ export default function UploadNewCaseFile({
   return (
     <Modal.Root>
       <Modal.OpenButton>{children}</Modal.OpenButton>
-      <Modal.Container className="max-w-xl max-h-full ring-0 border-none md:maxj-h-[95%] overflow-auto p-4 sm:p-6">
+      <Modal.Container className="max-w-xl max-h-full ring-0 border-none md:max-h-[95%] overflow-auto p-4 sm:p-6">
         <Modal.Header>
           <Modal.Title text="Enviar Arquivos para o Caso" />
           <Modal.Description text="Faça upload de documentos e arquivos relevantes para este caso. Todos os membros terão acesso aos arquivos enviados." />

@@ -6,8 +6,6 @@ import ChooseCaseLawyers from "./choose-case-lawyers";
 import { ILawyer } from "@/interfaces/ILawyer";
 import { CaseService } from "@/service/case.service";
 import { toast } from "sonner";
-import { CaseLawyerService } from "@/service/case-lawyer.service";
-import { LawyerService } from "@/service/lawyer.service";
 import { InviteService } from "@/service/invite.service";
 import ClientDetailsForm from "./client-details-form";
 import ClientAddressForm from "./client-address-form";

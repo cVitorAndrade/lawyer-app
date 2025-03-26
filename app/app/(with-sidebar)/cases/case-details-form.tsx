@@ -18,7 +18,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
-import { HTMLAttributes } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
