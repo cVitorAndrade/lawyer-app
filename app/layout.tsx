@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google"; // Adicione Inter aqui
 import "./globals.css";
 import { Toaster } from "sonner";
-import { setBearerToken } from "@/providers";
 import { SetTokenClientSide } from "@/components/set-token-client-side";
 
 const geistSans = Geist({
