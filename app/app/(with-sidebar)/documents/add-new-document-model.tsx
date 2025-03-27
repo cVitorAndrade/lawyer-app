@@ -3,9 +3,11 @@ import { StepNavigation } from "@/components/step-navigation";
 import { HTMLAttributes, ReactNode, useState } from "react";
 import DocumentModelDetailsForm from "./document-model-details-form";
 import UploadDocumentModelFile from "./upload-document-model-file";
-import { DocumentModelService } from "@/service/document-model.service";
 import { toast } from "sonner";
 import { UploadService } from "@/service/upload.service";
+import { createDocumentModel } from "@/actions/document-model/create-document-mode";
+import { revalidate } from "@/actions/revalidate-path";
+import { usePathname } from "next/navigation";
 
 interface AddNewDocumentModelProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -35,6 +37,8 @@ export default function AddNewDocumentModel({
     { title: "Dados do modelo" },
     { title: "Documentos do modelo" },
   ];
+
+  const pathname = usePathname();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -70,11 +74,12 @@ export default function AddNewDocumentModel({
 
   const onCreateDocumentModel = async () => {
     try {
-      const documentModel = await DocumentModelService.createDocumentModel(
-        documentModelDetails
-      );
+      const documentModel = await createDocumentModel(documentModelDetails);
+      if (!documentModel) throw new Error();
 
       await onUploadDocumentFile(documentModel.id);
+      await revalidate(pathname);
+
       toast.success("Modelo Criado com sucesso!");
     } catch (error) {
       console.log("AddNewDocumentModel - onCreateDocumentModel: ", error);
