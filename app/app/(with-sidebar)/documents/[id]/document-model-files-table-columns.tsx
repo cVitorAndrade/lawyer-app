@@ -1,19 +1,17 @@
+import { downloadDocumentModelFile } from "@/actions/document-model-file/download-document-model-file";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IDocumentModelFile } from "@/interfaces/IDocumentModelFile";
 import { formatDate } from "@/lib/date-utils";
 import { formatFileSize } from "@/lib/file-utils";
-import { CaseFileService } from "@/service/case-file.service";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { Download, MoreHorizontal } from "lucide-react";
 
 export const columns: ColumnDef<IDocumentModelFile>[] = [
   {
@@ -71,33 +69,28 @@ export const columns: ColumnDef<IDocumentModelFile>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
       const onDonwloadDocumentModelFile = async (id: string) => {
         try {
-          const response = await CaseFileService.downloadCaseFile(id);
+          const fileData = await downloadDocumentModelFile(id);
 
-          const blob = new Blob([response.data], {
-            type: response.headers["content-type"],
+          if (!fileData) {
+            console.error("Erro ao obter o arquivo");
+            return;
+          }
+
+          const blob = new Blob([fileData.buffer], {
+            type: fileData.contentType,
           });
 
           const url = window.URL.createObjectURL(blob);
+
           const a = document.createElement("a");
           a.href = url;
-
-          const contentDisposition = response.headers["content-disposition"];
-          let filename = "arquivo_desconhecido";
-
-          if (contentDisposition) {
-            const match = contentDisposition.match(/filename="(.+)"/);
-            if (match && match[1]) {
-              filename = match[1];
-            }
-          }
-
-          a.download = filename;
+          a.download = fileData.filename;
           document.body.appendChild(a);
           a.click();
+
+          document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
         } catch (error) {
           console.log(
@@ -117,19 +110,14 @@ export const columns: ColumnDef<IDocumentModelFile>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                onClick={async () =>
+                  await onDonwloadDocumentModelFile(row.original.id)
+                }
               >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => onDonwloadDocumentModelFile(row.original.id)}
-              >
+                <Download />
                 Fazer download
               </DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
