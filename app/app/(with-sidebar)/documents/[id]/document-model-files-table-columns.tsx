@@ -1,4 +1,6 @@
+import { deleteDocumentModelFile } from "@/actions/document-model-file/delete-document-model-file";
 import { downloadDocumentModelFile } from "@/actions/document-model-file/download-document-model-file";
+import { revalidate } from "@/actions/revalidate-path";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -11,7 +13,8 @@ import { IDocumentModelFile } from "@/interfaces/IDocumentModelFile";
 import { formatDate } from "@/lib/date-utils";
 import { formatFileSize } from "@/lib/file-utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Download, MoreHorizontal } from "lucide-react";
+import { Download, MoreHorizontal, Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<IDocumentModelFile>[] = [
   {
@@ -100,6 +103,14 @@ export const columns: ColumnDef<IDocumentModelFile>[] = [
         }
       };
 
+      const onDeleteDocumentModelFile = async (id: string) => {
+        try {
+          await deleteDocumentModelFile(id);
+          toast.success("Arquivo apagado com sucesso!");
+          revalidate(window.location.pathname);
+        } catch (error) {}
+      };
+
       return (
         <div className="w-full flex justify-end">
           <DropdownMenu>
@@ -109,14 +120,31 @@ export const columns: ColumnDef<IDocumentModelFile>[] = [
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={async () =>
-                  await onDonwloadDocumentModelFile(row.original.id)
-                }
-              >
-                <Download />
-                Fazer download
+            <DropdownMenuContent align="end" className="flex flex-col gap-0.5">
+              <DropdownMenuItem asChild>
+                <Button
+                  onClick={async () =>
+                    await onDonwloadDocumentModelFile(row.original.id)
+                  }
+                  variant="outline"
+                  className="focus-visible:ring-0"
+                >
+                  <Download />
+                  Fazer download
+                </Button>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Button
+                  onClick={async () =>
+                    await onDeleteDocumentModelFile(row.original.id)
+                  }
+                  variant="outline"
+                  className="text-red-500 focus-visible:ring-0"
+                >
+                  <Trash />
+                  Apagar arquivo
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
