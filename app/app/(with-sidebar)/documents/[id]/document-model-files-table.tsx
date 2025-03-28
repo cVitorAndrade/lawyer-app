@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DocumentModelFileTablePagination } from "./document-model-files-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -185,7 +186,7 @@ export default function DataTable<TData, TValue>({
       </div>
 
       <div className="mt-4">
-        {/* <FilesTablePagination table={table} /> */}
+        <DocumentModelFileTablePagination table={table} />
       </div>
     </div>
   );
