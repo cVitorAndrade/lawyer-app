@@ -74,6 +74,7 @@ export default function LawyerDocumentModelsSection({
                 <Button
                   className="w-full justify-start text-primary"
                   variant="outline"
+                  onClick={() => router.push(`/app/documents/${id}`)}
                 >
                   <FolderOpen />
                   Abrir modelo
