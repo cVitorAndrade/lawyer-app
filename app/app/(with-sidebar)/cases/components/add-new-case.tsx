@@ -1,10 +1,11 @@
+"use client";
+
 import { Modal } from "@/components/modal";
 import { StepNavigation } from "@/components/step-navigation";
 import { HTMLAttributes, ReactNode, useState } from "react";
 import CaseDetailsForm from "./case-details-form";
 import ChooseCaseLawyers from "./choose-case-lawyers";
 import { ILawyer } from "@/interfaces/ILawyer";
-import { CaseService } from "@/service/case.service";
 import { toast } from "sonner";
 import { InviteService } from "@/service/invite.service";
 import ClientDetailsForm from "./client-details-form";

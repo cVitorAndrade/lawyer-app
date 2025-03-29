@@ -1,3 +1,5 @@
+"use client";
+
 import { MetricCard } from "@/components/metric-card";
 import { Button } from "@/components/ui/button";
 import {
