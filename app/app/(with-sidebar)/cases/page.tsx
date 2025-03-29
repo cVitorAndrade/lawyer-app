@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import CasesTable from "./cases-table";
-import { columns } from "./cases-table-columns";
+import CasesTable from "./components/cases-table";
+import { columns } from "./components/cases-table-columns";
 import { ChevronDown, Plus } from "lucide-react";
 import { MetricCard } from "@/components/metric-card";
 import {
@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import AddNewCase from "./add-new-case";
+import AddNewCase from "./components/add-new-case";
 import { useEffect, useState } from "react";
 import { CaseService } from "@/service/case.service";
 import { ICase } from "@/interfaces/ICase";
@@ -32,6 +32,7 @@ export default function Cases() {
 
     onGetLawyerCases();
   }, []);
+  
   return (
     <div>
       {/* <div className="grid gap-4">

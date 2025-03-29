@@ -12,6 +12,9 @@ import ClientAddressForm from "./client-address-form";
 import { ClientService } from "@/service/client.service";
 import { AddressService } from "@/service/address.service";
 import { CaseClientService } from "@/service/case-client.service";
+import { createCase } from "@/actions/case/create-case";
+import { revalidate } from "@/actions/revalidate-path";
+import { usePathname } from "next/navigation";
 
 interface AddNewCaseProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -53,6 +56,7 @@ interface ClientAddress {
 }
 
 export default function AddNewCase({ children }: AddNewCaseProps) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -113,10 +117,12 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
 
   const onCreateCase = async () => {
     try {
-      const createdCase = await CaseService.createCase({
+      const createdCase = await createCase({
         ...caseDetails,
         status: "IN_PROGRESS",
       });
+
+      if (!createdCase) throw new Error();
 
       const [_, client] = await Promise.all([
         InviteService.createInvites({
@@ -140,7 +146,9 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
         }),
       ]);
 
-      toast.success(`Case was successfully created!`);
+      toast.success(`Caso criado com sucesso!`);
+
+      await revalidate(pathname);
     } catch (error) {
       console.log("AddNewCase - onCreateCase: ", error);
       toast.error("Error creating case", {
