@@ -1,6 +1,13 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -45,202 +52,16 @@ export default function CaseDetailsSection({
   const { createdBy, lawyers, clients } = caseDetails;
 
   return (
-    <div>
-      <div className="py-4 border-y text-sm flex flex-col gap-4">
-        {clients.map(({ id, name, email, telephone, birthDate, address }) => (
-          <div key={id} className="flex flex-col gap-4">
-            <h3 className="font-medium text-base">Dados do cliente</h3>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <User size={18} />
-                    <span className="font-medium">Name:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{name}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Mail size={18} />
-                    <span className="font-medium">Email:</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <span className="font-medium">{email}</span>
-                    <div className="flex items-center gap-2">
-                      <Link href={`mailto:${email}`}>
-                        <Button variant="outline" className="h-fit p-1.5">
-                          <AtSign />
-                        </Button>
-                      </Link>
-
-                      <Button
-                        variant="outline"
-                        className="h-fit p-1.5"
-                        onClick={() => navigator.clipboard.writeText(email)}
-                      >
-                        <Files />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Phone size={18} />
-                    <span className="font-medium">Tel:</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <span className="font-medium">{telephone}</span>
-                    <div className="flex items-center gap-2">
-                      <Link href={`tel:${telephone}`}>
-                        <Button variant="outline" className="h-fit p-1.5">
-                          <Phone />
-                        </Button>
-                      </Link>
-
-                      <Button
-                        variant="outline"
-                        className="h-fit p-1.5"
-                        onClick={() => navigator.clipboard.writeText(telephone)}
-                      >
-                        <Files />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Calendar size={18} />
-                    <span className="font-medium">Data de nascimento:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{formatDate(birthDate)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Bookmark size={18} />
-                    <span className="font-medium">Nome:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.name}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Globe size={18} />
-                    <span className="font-medium">País:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.country}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <MapPin size={18} />
-                    <span className="font-medium">CEP:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.postalCode}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Flag size={18} />
-                    <span className="font-medium">Estado:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.state}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Building size={18} />
-                    <span className="font-medium">Cidade:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.city}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Map size={18} />
-                    <span className="font-medium">Bairro:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.neighborhood}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <SignpostBig size={18} />
-                    <span className="font-medium">Rua:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.street}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                  <div className="flex items-center gap-2 text-neutral-500">
-                    <Hash size={18} />
-                    <span className="font-medium">Número:</span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium">{address.number}</span>
-                  </div>
-                </div>
-
-                {address.complement && (
-                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-                    <div className="flex items-center gap-2 text-neutral-500">
-                      <CirclePlus size={18} />
-                      <span className="font-medium">Complemento:</span>
-                    </div>
-
-                    <div>
-                      <span className="font-medium">{address.complement}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-
-        <Separator />
-
-        <div className="flex flex-col gap-4">
-          <h3 className="font-medium text-base">Dados do caso</h3>
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Detalhes do caso</CardTitle>
+          <CardDescription>
+            Consulte todas as informações essenciais deste caso, incluindo
+            clientes, participantes e atualizações importantes.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-neutral-500">
@@ -347,8 +168,218 @@ export default function CaseDetailsSection({
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Clientes</CardTitle>
+
+          <CardDescription>
+            Gerencie e visualize todos os clientes associados aos seus casos.
+            Adicione, edite e acompanhe informações essenciais em um só lugar
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          {clients.map(({ id, name, email, telephone, birthDate, address }) => (
+            <div key={id} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <User size={18} />
+                      <span className="font-medium">Name:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{name}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Mail size={18} />
+                      <span className="font-medium">Email:</span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className="font-medium">{email}</span>
+                      <div className="flex items-center gap-2">
+                        <Link href={`mailto:${email}`}>
+                          <Button variant="outline" className="h-fit p-1.5">
+                            <AtSign />
+                          </Button>
+                        </Link>
+
+                        <Button
+                          variant="outline"
+                          className="h-fit p-1.5"
+                          onClick={() => navigator.clipboard.writeText(email)}
+                        >
+                          <Files />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Phone size={18} />
+                      <span className="font-medium">Tel:</span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className="font-medium">{telephone}</span>
+                      <div className="flex items-center gap-2">
+                        <Link href={`tel:${telephone}`}>
+                          <Button variant="outline" className="h-fit p-1.5">
+                            <Phone />
+                          </Button>
+                        </Link>
+
+                        <Button
+                          variant="outline"
+                          className="h-fit p-1.5"
+                          onClick={() =>
+                            navigator.clipboard.writeText(telephone)
+                          }
+                        >
+                          <Files />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Calendar size={18} />
+                      <span className="font-medium">Data de nascimento:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">
+                        {formatDate(birthDate)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Bookmark size={18} />
+                      <span className="font-medium">Nome:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.name}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Globe size={18} />
+                      <span className="font-medium">País:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.country}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <MapPin size={18} />
+                      <span className="font-medium">CEP:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.postalCode}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Flag size={18} />
+                      <span className="font-medium">Estado:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.state}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Building size={18} />
+                      <span className="font-medium">Cidade:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.city}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Map size={18} />
+                      <span className="font-medium">Bairro:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">
+                        {address.neighborhood}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <SignpostBig size={18} />
+                      <span className="font-medium">Rua:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.street}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <Hash size={18} />
+                      <span className="font-medium">Número:</span>
+                    </div>
+
+                    <div>
+                      <span className="font-medium">{address.number}</span>
+                    </div>
+                  </div>
+
+                  {address.complement && (
+                    <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                      <div className="flex items-center gap-2 text-neutral-500">
+                        <CirclePlus size={18} />
+                        <span className="font-medium">Complemento:</span>
+                      </div>
+
+                      <div>
+                        <span className="font-medium">
+                          {address.complement}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

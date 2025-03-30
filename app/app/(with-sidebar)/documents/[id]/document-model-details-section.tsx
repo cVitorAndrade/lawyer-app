@@ -1,4 +1,9 @@
-import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { IDocumentModel } from "@/interfaces/IDocumentModel";
 import { formatDate } from "@/lib/date-utils";
 import { Calendar, File, FolderOpen, PaintBucket } from "lucide-react";
@@ -26,53 +31,60 @@ export default function DocumentModelDetailsSection({
         </div>
       </div>
 
-      <Separator />
+      {/* <Separator /> */}
 
-      <div className="px-2">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <File size={18} />
-              <span className="font-medium">N° de arquivos:</span>
-            </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Detalhes do modelo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="px-2">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                <div className="flex items-center gap-2 text-neutral-500">
+                  <File size={18} />
+                  <span className="font-medium">N° de arquivos:</span>
+                </div>
 
-            <div>
-              <span className="font-medium">
-                {files.length} arquivo{files.length !== 1 && "s"}
-              </span>
+                <div>
+                  <span className="font-medium">
+                    {files.length} arquivo{files.length !== 1 && "s"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                <div className="flex items-center gap-2 text-neutral-500">
+                  <PaintBucket size={18} />
+                  <span className="font-medium">Cor:</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div
+                    className="size-4"
+                    style={{ background: documentModel.color }}
+                  ></div>
+
+                  <span className="font-medium">{documentModel.color}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center sm:gap-4 flex-wrap gap-1">
+                <div className="flex items-center gap-2 text-neutral-500">
+                  <Calendar size={18} />
+                  <span className="font-medium">Data de criação:</span>
+                </div>
+
+                <div>
+                  <span className="font-medium">
+                    {formatDate(documentModel.createdAt)}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <PaintBucket size={18} />
-              <span className="font-medium">Cor:</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div
-                className="size-4"
-                style={{ background: documentModel.color }}
-              ></div>
-
-              <span className="font-medium">{documentModel.color}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center sm:gap-4 flex-wrap gap-1">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <Calendar size={18} />
-              <span className="font-medium">Data de criação:</span>
-            </div>
-
-            <div>
-              <span className="font-medium">
-                {formatDate(documentModel.createdAt)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -71,6 +71,8 @@ export default function ShowNotifications({
           };
         });
 
+      console.log({ allInviteNotifications });
+
       setAllNotifications([
         ...(allInviteNotifications as NotificationWithDetails[]),
       ]);

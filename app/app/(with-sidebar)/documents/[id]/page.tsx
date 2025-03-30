@@ -30,7 +30,6 @@ export default async function DocumentModelDetails({
   return (
     <div className="flex flex-col gap-4">
       <DocumentModelDetailsSection documentModel={documentModel} />
-      <Separator />
       <DocumentModelFilesSection documentModel={documentModel} />
     </div>
   );

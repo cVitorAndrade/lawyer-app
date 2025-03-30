@@ -5,6 +5,13 @@ import { Plus } from "lucide-react";
 import DataTable from "./files-table";
 import { columns } from "./files-table-columns";
 import { ICaseFile } from "@/interfaces/ICaseFile";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface CaseFilesSectionProps {
   caseFiles: ICaseFile[];
@@ -16,13 +23,13 @@ export default function CaseFilesSection({
   caseId,
 }: CaseFilesSectionProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="font-medium">Documentos</h3>
-          <p className="text-neutral-500">
+    <Card>
+      <CardHeader className="flex flex-row justify-between gap-4 items-center">
+        <div className="flex flex-col space-y-1.5">
+          <CardTitle>Documentos</CardTitle>
+          <CardDescription>
             Arquivos e documentos que foram adicionados a este caso.
-          </p>
+          </CardDescription>
         </div>
 
         <UploadNewCaseFile caseId={caseId}>
@@ -30,9 +37,10 @@ export default function CaseFilesSection({
             <Plus /> Adicionar arquivo
           </Button>
         </UploadNewCaseFile>
-      </div>
-
-      <DataTable columns={columns} data={caseFiles} />
-    </div>
+      </CardHeader>
+      <CardContent>
+        <DataTable columns={columns} data={caseFiles} />
+      </CardContent>
+    </Card>
   );
 }

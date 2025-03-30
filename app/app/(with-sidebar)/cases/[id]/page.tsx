@@ -3,6 +3,7 @@ import CaseFilesSection from "./case-files-section";
 import CaseDetailsSection from "./case-details-section";
 import { ICaseFile } from "@/interfaces/ICaseFile";
 import { ICase } from "@/interfaces/ICase";
+import CaseTimeLineSection from "./case-time-line-section";
 
 export default async function CaseDetails({
   params,
@@ -35,105 +36,14 @@ export default async function CaseDetails({
     caseFilesResponse.json(),
     caseDetailsResponse.json(),
   ]);
-  
+
   return (
     <div className="flex flex-col gap-4">
-      {/* <div className="flex flex-col gap-4 rounded-lg py-4 bg-white">
-        <div className="flex flex-col gap-1">
-          <h3 className="font-medium">Atividades</h3>
-          <p className="text-neutral-500">
-            Linha do tempo das atividades que ocorreram nesse caso
-          </p>
-        </div>
-
-        <div className="border-y py-4">
-          <div className="pl-4">
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={MessageSquareText} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-              <TimelineEvent.Content></TimelineEvent.Content>
-            </TimelineEvent.Root>
-
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={Upload} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-              <TimelineEvent.Content></TimelineEvent.Content>
-            </TimelineEvent.Root>
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={MessageSquareText} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-              <TimelineEvent.Content></TimelineEvent.Content>
-            </TimelineEvent.Root>
-
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={Upload} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-              <TimelineEvent.Content></TimelineEvent.Content>
-            </TimelineEvent.Root>
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={MessageSquareText} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-              <TimelineEvent.Content></TimelineEvent.Content>
-            </TimelineEvent.Root>
-
-            <TimelineEvent.Root>
-              <TimelineEvent.Header>
-                <TimelineEvent.Icon icon={Check} />
-                <TimelineEvent.Title
-                  actor="Carter Bator"
-                  action="Upload 3 file in"
-                  target="Mobile Flow Design"
-                />
-
-                <TimelineEvent.CreatedAt createdAt="1hr Ago" />
-              </TimelineEvent.Header>
-            </TimelineEvent.Root>
-          </div>
-        </div>
-      </div> */}
-
       {/* Clients Section */}
       <CaseDetailsSection caseDetails={caseDetails} />
+
+      {/* Case Time line */}
+      <CaseTimeLineSection />
 
       {/* Files Section */}
       <CaseFilesSection caseFiles={caseFiles} caseId={id} />
