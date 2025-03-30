@@ -4,8 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -25,12 +23,16 @@ import {
   CirclePause,
   MoreHorizontal,
   Timer,
+  Trash,
 } from "lucide-react";
 import { DataTableColumnHeader } from "./cases-table-header";
 import { ICase } from "@/interfaces/ICase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
 import { formatDate } from "@/lib/date-utils";
+import { deleteCase } from "@/actions/case/delete-case";
+import { toast } from "sonner";
+import { revalidate } from "@/actions/revalidate-path";
 
 const statusStyle = {
   IN_PROGRESS: {
@@ -234,7 +236,15 @@ export const columns: ColumnDef<ICase>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const caseId = row.original.id;
+      const onDeleteCase = async (id: string) => {
+        try {
+          await deleteCase(id);
+          toast.success("Caso deletado com sucesso");
+          revalidate(window.location.pathname);
+        } catch (error) {
+          console.log("CasesTableColumns - onDeleteCase: ", error);
+        }
+      };
 
       return (
         <div className="w-full flex justify-end">
@@ -249,15 +259,16 @@ export const columns: ColumnDef<ICase>[] = [
               align="end"
               onClick={(e) => e.stopPropagation()}
             >
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(caseId)}
-              >
-                Copy caseID
+              <DropdownMenuItem asChild>
+                <Button
+                  onClick={async () => await onDeleteCase(row.original.id)}
+                  variant="outline"
+                  className="text-red-500 focus-visible:ring-0"
+                >
+                  <Trash />
+                  Apagar caso
+                </Button>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
