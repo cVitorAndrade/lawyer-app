@@ -1,3 +1,5 @@
+import { deleteCaseFile } from "@/actions/case-file/delete-case-file";
+import { revalidate } from "@/actions/revalidate-path";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +17,8 @@ import { formatDate } from "@/lib/date-utils";
 import { formatFileSize } from "@/lib/file-utils";
 import { CaseFileService } from "@/service/case-file.service";
 import { ColumnDef } from "@tanstack/react-table";
-import { File as FileIcon, MoreHorizontal } from "lucide-react";
+import { Download, MoreHorizontal, Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<ICaseFile>[] = [
   {
@@ -97,8 +100,6 @@ export const columns: ColumnDef<ICaseFile>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
       const onDownloadCaseFile = async (id: string) => {
         try {
           const response = await CaseFileService.downloadCaseFile(id);
@@ -130,6 +131,16 @@ export const columns: ColumnDef<ICaseFile>[] = [
         }
       };
 
+      const onDeleteCaseFile = async (id: string) => {
+        try {
+          await deleteCaseFile(id);
+          toast.success("Arquivo apagado com sucesso!");
+          revalidate(window.location.pathname);
+        } catch (error) {
+          console.log("FilesTableColumns - onDeleteCaseFile: ", error);
+        }
+      };
+
       return (
         <div className="w-full flex justify-end">
           <DropdownMenu>
@@ -139,20 +150,29 @@ export const columns: ColumnDef<ICaseFile>[] = [
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy payment ID
+            <DropdownMenuContent align="end" className="flex flex-col gap-0.5">
+              <DropdownMenuItem asChild>
+                <Button
+                  variant="outline"
+                  onClick={async () =>
+                    await onDownloadCaseFile(row.original.id)
+                  }
+                  className="focus-visible:ring-0"
+                >
+                  <Download />
+                  Fazer download
+                </Button>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => onDownloadCaseFile(row.original.id)}
-              >
-                Fazer download
+              <DropdownMenuItem asChild>
+                <Button
+                  onClick={async () => await onDeleteCaseFile(row.original.id)}
+                  variant="outline"
+                  className="text-red-500 focus-visible:ring-0"
+                >
+                  <Trash />
+                  Apagar arquivo
+                </Button>
               </DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
