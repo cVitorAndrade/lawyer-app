@@ -33,6 +33,8 @@ export default function LawyerDocumentModelsSection({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
+  const [isDownloading, startDownloadTransition] = useTransition();
+
   const onDonwloadAllDocumentModelFiles = async (id: string) => {
     try {
       await downloadAllDocumentModelFiles(id);
@@ -96,9 +98,15 @@ export default function LawyerDocumentModelsSection({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onDonwloadAllDocumentModelFiles(id)}
+                onClick={() =>
+                  startDownloadTransition(
+                    async () => await onDonwloadAllDocumentModelFiles(id)
+                  )
+                }
+                disabled={isDownloading}
               >
-                <Download /> Baixar arquivos
+                <Download />{" "}
+                {isDownloading ? "Baixando arquivos..." : "Baixar arquivos"}
               </Button>
             </div>
 
