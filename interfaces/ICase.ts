@@ -1,9 +1,9 @@
 import { IClient } from "./IClient";
 import { ILawyer } from "./ILawyer";
 
-type CaseType = "ADMINISTRATIVE" | "JUDICIAL";
-type CasePriority = "LOW" | "MEDIUM" | "HIGH";
-type CaseStatus = "IN_PROGRESS" | "FINISHED" | "CANCELED" | "PAUSED";
+export type CaseType = "ADMINISTRATIVE" | "JUDICIAL";
+export type CasePriority = "LOW" | "MEDIUM" | "HIGH";
+export type CaseStatus = "IN_PROGRESS" | "FINISHED" | "CANCELED" | "PAUSED";
 
 export interface ICreateCase {
   title: string;

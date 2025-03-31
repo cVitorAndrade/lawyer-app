@@ -33,6 +33,7 @@ import { formatDate } from "@/lib/date-utils";
 import { deleteCase } from "@/actions/case/delete-case";
 import { toast } from "sonner";
 import { revalidate } from "@/actions/revalidate-path";
+import { formatePriority, formatStatus, formatType } from "@/lib/case-utils";
 
 const statusStyle = {
   IN_PROGRESS: {
@@ -177,7 +178,7 @@ export const columns: ColumnDef<ICase>[] = [
           typeStyles[row.original.type]
         )}
       >
-        <span className="capitalize">{row.original.type}</span>
+        <span className="uppercase">{formatType(row.original.type)}</span>
       </div>
     ),
   },
@@ -195,7 +196,7 @@ export const columns: ColumnDef<ICase>[] = [
         )}
       >
         {statusStyle[row.original.status].icon}
-        <span className="capitalize">{row.original.status}</span>
+        <span className="capitalize">{formatStatus(row.original.status)}</span>
       </div>
     ),
   },
@@ -207,7 +208,9 @@ export const columns: ColumnDef<ICase>[] = [
     cell: ({ row }) => (
       <div className="flex gap-2 items-center text-sm font-normal">
         {priorityIcon[row.original.priority]}
-        <span className="capitalize">{row.original.priority}</span>
+        <span className="capitalize">
+          {formatePriority(row.original.priority)}
+        </span>
       </div>
     ),
   },
