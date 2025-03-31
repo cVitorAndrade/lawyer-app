@@ -21,6 +21,7 @@ import {
   Trash,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { downloadAllDocumentModelFiles } from "@/actions/document-model-file/download-all-document-model-files";
 
 interface LawyerDocumentModelsSectionProps {
   documentModels: IDocumentModel[];
@@ -31,6 +32,39 @@ export default function LawyerDocumentModelsSection({
 }: LawyerDocumentModelsSectionProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const onDonwloadAllDocumentModelFiles = async (id: string) => {
+    try {
+      await downloadAllDocumentModelFiles(id);
+
+      const fileData = await downloadAllDocumentModelFiles(id);
+
+      if (!fileData) {
+        console.error("Erro ao obter o arquivo");
+        return;
+      }
+
+      const blob = new Blob([fileData.buffer], {
+        type: fileData.contentType,
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileData.filename;
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(
+        "LawyerDocumentModelsSection - onDonwloadAllDocumentModelFiles: ",
+        error
+      );
+    }
+  };
 
   return (
     <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
@@ -59,7 +93,11 @@ export default function LawyerDocumentModelsSection({
 
           <div className="bg-white flex justify-between items-center py-4 px-2 rounded-b-lg">
             <div>
-              <Button size="sm" variant="outline">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onDonwloadAllDocumentModelFiles(id)}
+              >
                 <Download /> Baixar arquivos
               </Button>
             </div>
