@@ -1,4 +1,5 @@
 "use client";
+import { revalidate } from "@/actions/revalidate-path";
 import FileDropzone from "@/components/file-dropzone";
 import { FileToUpload } from "@/components/file-to-upload";
 import { Modal } from "@/components/modal";
@@ -7,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatFileSize } from "@/lib/file-utils";
 import { UploadService } from "@/service/upload.service";
 import { CircleHelp } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { HTMLAttributes, ReactNode, useState } from "react";
 import { toast } from "sonner";
 
@@ -26,6 +28,8 @@ export default function UploadNewCaseFile({
   children,
   caseId,
 }: UploadNewCaseFileProps) {
+  const pathname = usePathname();
+
   const [filesToUpload, setFilesToUpload] = useState<FileToUpload[]>([]);
 
   const updateFileStatus = (fileId: string, updates: Partial<FileToUpload>) => {
@@ -53,6 +57,8 @@ export default function UploadNewCaseFile({
             }
           })
       );
+
+      revalidate(pathname);
     } catch (error) {
       console.error("UploadNewCaseFile - onUploadCaseFiles: ", error);
     }
