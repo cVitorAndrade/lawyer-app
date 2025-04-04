@@ -14,6 +14,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import { ILawyer } from "@/interfaces/ILawyer";
 import { LawyerService } from "@/service/lawyer.service";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
 
 interface LawyerMultiSelectProps {
   selectedLawyers: ILawyer[];
@@ -69,12 +70,6 @@ export default function LawyerMultiSelect({
     );
   });
 
-  const onGetAvatarFallback = (firstName: string, lastName: string): string => {
-    const firstInitial = firstName ? firstName[0].toUpperCase() : "";
-    const lastInitial = lastName ? lastName[0].toUpperCase() : "";
-
-    return `${firstInitial}${lastInitial}`;
-  };
 
   React.useEffect(() => {
     const onGetAllLawyers = async () => {
@@ -162,14 +157,11 @@ export default function LawyerMultiSelect({
                         <div className="flex gap-2 items-center">
                           <Avatar className="h-8 w-8 rounded-lg">
                             <AvatarImage
-                              src={lawyer.avatar}
+                              src={getAvatarUrl(lawyer.avatar)}
                               alt={lawyer.name}
                             />
                             <AvatarFallback className="rounded-lg">
-                              {onGetAvatarFallback(
-                                lawyer.name.split(" ")[0],
-                                lawyer.name.split(" ")[1]
-                              )}
+                              {getAvatarFallback(lawyer.name)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="text-sm">
