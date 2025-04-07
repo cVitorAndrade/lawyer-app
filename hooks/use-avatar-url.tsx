@@ -1,4 +1,4 @@
-export const getAvatarUrl = (path?: string) => {
+export const getAvatarUrl = (path?: string | null) => {
   if (!path) return "";
 
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${process.env.NEXT_PUBLIC_SUPABASE_AVATARS_BUCKET}/${path}`;

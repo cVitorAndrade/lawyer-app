@@ -1,14 +1,14 @@
 "use server";
 
+import { createInviteOutput, createInviteSchema } from "@/schemas/invite";
 import { authenticatedProcedure } from "@/lib/zsa-procedures";
-import { createCaseOutputSchema, createCaseSchema } from "@/schemas/case";
 
-export const createCase = authenticatedProcedure
+export const createInvite = authenticatedProcedure
   .createServerAction()
-  .input(createCaseSchema)
-  .output(createCaseOutputSchema)
+  .input(createInviteSchema)
+  .output(createInviteOutput)
   .handler(async ({ input, ctx }) => {
-    const response = await ctx.fetch("/case", {
+    const response = await ctx.fetch("/invite", {
       method: "POST",
       body: JSON.stringify(input),
     });

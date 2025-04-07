@@ -20,34 +20,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { ptBR } from "date-fns/locale";
-
-interface ClientDetails {
-  name: string;
-  email: string;
-  telephone: string;
-  birthDate: Date;
-}
+import {
+  createClientInputSchema,
+  CreateClientInputType,
+} from "@/schemas/client";
 
 interface ClientDetailsFormProps {
   onPreviousStep: () => void;
-  onFinish: (clientDetails: ClientDetails) => void;
+  onFinish: (clientDetails: CreateClientInputType) => void;
 }
 
 export default function ClientDetailsForm({
   onPreviousStep,
   onFinish,
 }: ClientDetailsFormProps) {
-  const clientDetailsSchema = z.object({
-    name: z.string().nonempty("Nome é obrigatório"),
-    email: z.string().email("E-mail inválido"),
-    birthDate: z.date({ required_error: "Selecione uma data" }),
-    telephone: z.string().nonempty("Telefone é obrigatório"),
-  });
-
-  const clientDetailsForm = useForm<z.infer<typeof clientDetailsSchema>>({
-    resolver: zodResolver(clientDetailsSchema),
+  const clientDetailsForm = useForm<CreateClientInputType>({
+    resolver: zodResolver(createClientInputSchema),
     defaultValues: {
       birthDate: new Date(),
       email: "",
@@ -56,9 +45,7 @@ export default function ClientDetailsForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof clientDetailsSchema>) => {
-    onFinish(values);
-  };
+  const onSubmit = async (values: CreateClientInputType) => onFinish(values);
 
   return (
     <Form {...clientDetailsForm}>

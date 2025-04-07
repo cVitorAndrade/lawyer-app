@@ -7,7 +7,7 @@ export interface ICreateInvite {
 
 type InviteStatus = "pending" | "accepted" | "rejected";
 
-export interface IInvite extends ICreateInvite {
+export interface IInvite {
   id: string;
   invitedById: string;
   invitedId: string;

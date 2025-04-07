@@ -1,21 +1,33 @@
 "use client";
 
+import { HTMLAttributes, ReactNode, useState } from "react";
 import { Modal } from "@/components/modal";
 import { StepNavigation } from "@/components/step-navigation";
-import { HTMLAttributes, ReactNode, useState } from "react";
-import CaseDetailsForm from "./case-details-form";
-import ChooseCaseLawyers from "./choose-case-lawyers";
-import { ILawyer } from "@/interfaces/ILawyer";
+
+// import { ILawyer } from "@/interfaces/ILawyer";
+
 import { toast } from "sonner";
-import { InviteService } from "@/service/invite.service";
+
+import CaseDetailsForm from "./case-details-form";
 import ClientDetailsForm from "./client-details-form";
 import ClientAddressForm from "./client-address-form";
-import { ClientService } from "@/service/client.service";
-import { AddressService } from "@/service/address.service";
-import { CaseClientService } from "@/service/case-client.service";
-import { createCase } from "@/actions/case/create-case";
-import { revalidate } from "@/actions/revalidate-path";
+import ChooseCaseLawyers from "./choose-case-lawyers";
+
 import { usePathname } from "next/navigation";
+import { useServerAction } from "zsa-react";
+
+import { revalidate } from "@/actions/revalidate-path";
+
+import { createCase } from "@/actions/case/create-case";
+import { createClient } from "@/actions/client/create-client";
+import { createAddress } from "@/actions/address/create-address";
+import { createCaseClient } from "@/actions/case-client/create-case-client";
+import { createInvite } from "@/actions/invite/create-invite";
+
+import { CreateAddressInputType } from "@/schemas/address";
+import { CreateCaseInputType } from "@/schemas/case";
+import { CreateClientInputType } from "@/schemas/client";
+import { LawyerType } from "@/schemas/lawyer";
 
 interface AddNewCaseProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -32,50 +44,52 @@ const caseCreationSteps: CaseCreationStep[] = [
   { title: "Membros" },
 ];
 
-interface CaseDetails {
-  title: string;
-  description: string;
-  priority: "LOW" | "MEDIUM" | "HIGH";
-  type: "ADMINISTRATIVE" | "JUDICIAL";
-}
-
-interface ClientDetails {
-  name: string;
-  email: string;
-  telephone: string;
-  birthDate: Date;
-}
-
-interface ClientAddress {
-  postalCode: string;
-  city: string;
-  neighborhood: string;
-  state: string;
-  street: string;
-  number: string;
-  complement: string;
-}
-
 export default function AddNewCase({ children }: AddNewCaseProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
 
-  const [caseDetails, setCaseDetails] = useState<CaseDetails>({
+  const { execute: executeCreateInvite } = useServerAction(createInvite, {
+    onError: ({ err }) => {
+      toast.error("Ocorreu um erro enquanto criava o convite para o caso");
+      console.log({ err });
+    },
+  });
+
+  const { execute: executeCreateCase } = useServerAction(createCase, {
+    onError: ({ err }) => console.log({ err }),
+  });
+
+  const { execute: executeCreateClient } = useServerAction(createClient, {
+    onError: ({ err }) => console.log({ err }),
+  });
+
+  const { execute: executeCreateAddress } = useServerAction(createAddress, {
+    onError: ({ err }) => console.log({ err }),
+  });
+  
+  const { execute: executeCreateCaseClient } = useServerAction(
+    createCaseClient,
+    {
+      onError: ({ err }) => console.log({ err }),
+    }
+  );
+
+  const [caseDetails, setCaseDetails] = useState<CreateCaseInputType>({
     title: "",
     description: "",
     type: "ADMINISTRATIVE",
     priority: "HIGH",
   });
 
-  const [clientDetails, setClientDetails] = useState<ClientDetails>({
+  const [clientDetails, setClientDetails] = useState<CreateClientInputType>({
     birthDate: new Date(),
     email: "",
     name: "",
     telephone: "",
   });
 
-  const [clientAddress, setClientAddress] = useState<ClientAddress>({
+  const [clientAddress, setClientAddress] = useState<CreateAddressInputType>({
     city: "",
     complement: "",
     neighborhood: "",
@@ -85,83 +99,73 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
     street: "",
   });
 
-  const [selectedLawyersToCase, setSelectedLawyersToCase] = useState<ILawyer[]>(
-    []
-  );
+  const [selectedLawyersToCase, setSelectedLawyersToCase] = useState<
+    LawyerType[]
+  >([]);
 
-  const onGetIfIsHighlighted = (step: number): boolean => {
-    return currentStep >= step;
-  };
+  const onGetIfIsHighlighted = (step: number): boolean => currentStep >= step;
 
-  const onPreviousStep = () => {
-    setCurrentStep(currentStep - 1);
-  };
+  const onPreviousStep = () => setCurrentStep(currentStep - 1);
 
-  const onNextStep = () => {
-    setCurrentStep(currentStep + 1);
-  };
+  const onNextStep = () => setCurrentStep(currentStep + 1);
 
-  const onFinishCaseDetailsStep = (values: CaseDetails) => {
+  const onFinishCaseDetailsStep = (values: CreateCaseInputType) => {
     setCaseDetails(values);
     onNextStep();
   };
 
-  const onFinishClientDetailsStep = (values: ClientDetails) => {
+  const onFinishClientDetailsStep = (values: CreateClientInputType) => {
     setClientDetails(values);
     onNextStep();
   };
 
-  const onFinishClientAddressStep = (values: ClientAddress) => {
+  const onFinishClientAddressStep = (values: CreateAddressInputType) => {
     setClientAddress(values);
     onNextStep();
   };
 
   const onCreateCase = async () => {
     try {
-      const createdCase = await createCase({
+      const [createdCase] = await executeCreateCase({
         ...caseDetails,
         status: "IN_PROGRESS",
       });
+      if (!createdCase) throw new Error("Erro ao criar caso");
 
-      if (!createdCase) throw new Error();
+      const [client] = await executeCreateClient(clientDetails);
+      if (!client) throw new Error("Erro ao criar o cliente");
 
-      const [_, client] = await Promise.all([
-        InviteService.createInvites({
+      await Promise.all([
+        executeCreateInvite({
           caseId: createdCase.id,
           lawyers: selectedLawyersToCase,
         }),
-        ClientService.createClient(clientDetails),
-      ]);
-
-      const [address, caseclient] = await Promise.all([
-        AddressService.createAddress({
+        executeCreateAddress({
           country: "Brasil",
           name: "casa",
           ownerId: client.id,
           ...clientAddress,
         }),
-
-        CaseClientService.createCaseClient({
+        executeCreateCaseClient({
           caseId: createdCase.id,
           clientId: client.id,
         }),
       ]);
 
-      toast.success(`Caso criado com sucesso!`);
-
+      toast.success("Caso criado com sucesso!");
       await revalidate(pathname);
     } catch (error) {
       console.log("AddNewCase - onCreateCase: ", error);
-      toast.error("Error creating case", {
+      toast.error("Erro ao criar caso", {
         description:
-          "An error occurred while trying to create the case. Please try again later.",
+          "Ocorreu um erro ao tentar criar o caso. Por favor tente novamente.",
       });
     } finally {
       onCloseModal();
     }
   };
 
-  const onFinishChooseCaseMembersStep = async (lawyers: ILawyer[]) => {
+  const onFinishChooseCaseMembersStep = async (lawyers: LawyerType[]) => {
     try {
       setSelectedLawyersToCase(lawyers);
       await onCreateCase();

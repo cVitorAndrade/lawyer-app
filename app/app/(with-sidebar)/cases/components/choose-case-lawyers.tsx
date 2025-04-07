@@ -1,12 +1,12 @@
 import LawyerMultiSelect from "@/components/fancy-multi-select";
 import { Button } from "@/components/ui/button";
-import { ILawyer } from "@/interfaces/ILawyer";
+import { LawyerType } from "@/schemas/lawyer";
 
 interface ChooseCaseLawyersProps {
-  onFinish: (selectedLawyers: ILawyer[]) => void;
+  onFinish: (selectedLawyers: LawyerType[]) => void;
   onPreviousStep: () => void;
-  selectedLawyers: ILawyer[];
-  setSelectedLawyers: React.Dispatch<React.SetStateAction<ILawyer[]>>;
+  selectedLawyers: LawyerType[];
+  setSelectedLawyers: React.Dispatch<React.SetStateAction<LawyerType[]>>;
 }
 
 export default function ChooseCaseLawyers({

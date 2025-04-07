@@ -15,10 +15,11 @@ import { ILawyer } from "@/interfaces/ILawyer";
 import { LawyerService } from "@/service/lawyer.service";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
+import { LawyerType } from "@/schemas/lawyer";
 
 interface LawyerMultiSelectProps {
-  selectedLawyers: ILawyer[];
-  setSelectedLawyers: React.Dispatch<React.SetStateAction<ILawyer[]>>;
+  selectedLawyers: LawyerType[];
+  setSelectedLawyers: React.Dispatch<React.SetStateAction<LawyerType[]>>;
 }
 
 export default function LawyerMultiSelect({
@@ -29,8 +30,8 @@ export default function LawyerMultiSelect({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
-  const handleUnselect = React.useCallback((lawyer: ILawyer) => {
-    setSelectedLawyers((prevLawyers: ILawyer[]) =>
+  const handleUnselect = React.useCallback((lawyer: LawyerType) => {
+    setSelectedLawyers((prevLawyers: LawyerType[]) =>
       prevLawyers.filter((l) => l.email !== lawyer.email)
     );
   }, []);
@@ -44,7 +45,7 @@ export default function LawyerMultiSelect({
             const newSelected = [...selectedLawyers];
             const validLawyers = newSelected.pop() as unknown;
 
-            setSelectedLawyers(validLawyers as ILawyer[]);
+            setSelectedLawyers(validLawyers as LawyerType[]);
           }
         }
 
@@ -56,7 +57,7 @@ export default function LawyerMultiSelect({
     []
   );
 
-  const [allLawyers, setAllLawyers] = React.useState<ILawyer[]>([]);
+  const [allLawyers, setAllLawyers] = React.useState<LawyerType[]>([]);
 
   const selectableLawyers = allLawyers.filter(
     (lawyer) => !selectedLawyers.includes(lawyer)
@@ -69,7 +70,6 @@ export default function LawyerMultiSelect({
       lawyer.email.toLowerCase().includes(search)
     );
   });
-
 
   React.useEffect(() => {
     const onGetAllLawyers = async () => {

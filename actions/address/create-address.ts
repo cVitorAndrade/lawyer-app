@@ -1,14 +1,14 @@
 "use server";
 
 import { authenticatedProcedure } from "@/lib/zsa-procedures";
-import { createCaseOutputSchema, createCaseSchema } from "@/schemas/case";
+import { addressSchema, createAddressSchema } from "@/schemas/address";
 
-export const createCase = authenticatedProcedure
+export const createAddress = authenticatedProcedure
   .createServerAction()
-  .input(createCaseSchema)
-  .output(createCaseOutputSchema)
+  .input(createAddressSchema)
+  .output(addressSchema)
   .handler(async ({ input, ctx }) => {
-    const response = await ctx.fetch("/case", {
+    const response = await ctx.fetch("/address", {
       method: "POST",
       body: JSON.stringify(input),
     });

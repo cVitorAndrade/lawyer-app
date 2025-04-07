@@ -16,32 +16,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { createCaseInputSchema, CreateCaseInputType } from "@/schemas/case";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-interface CaseDetails {
-  title: string;
-  description: string;
-  priority: "LOW" | "MEDIUM" | "HIGH";
-  type: "ADMINISTRATIVE" | "JUDICIAL";
-}
 
 interface CaseDetailsFormProps {
-  onFinish: (values: CaseDetails) => void;
+  onFinish: (values: CreateCaseInputType) => void;
 }
 
 export default function CaseDetailsForm({ onFinish }: CaseDetailsFormProps) {
-  const caseDetailsSchema = z.object({
-    title: z.string().nonempty(),
-    description: z.string().nonempty(),
-    type: z.enum(["ADMINISTRATIVE", "JUDICIAL"]),
-    priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
-  });
-
-  const caseDetailsForm = useForm<z.infer<typeof caseDetailsSchema>>({
-    resolver: zodResolver(caseDetailsSchema),
+  const caseDetailsForm = useForm<CreateCaseInputType>({
+    resolver: zodResolver(createCaseInputSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -50,9 +36,7 @@ export default function CaseDetailsForm({ onFinish }: CaseDetailsFormProps) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof caseDetailsSchema>) => {
-    onFinish(values);
-  };
+  const onSubmit = (values: CreateCaseInputType) => onFinish(values);
 
   return (
     <Form {...caseDetailsForm}>
