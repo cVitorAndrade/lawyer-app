@@ -4,8 +4,6 @@ import { HTMLAttributes, ReactNode, useState } from "react";
 import { Modal } from "@/components/modal";
 import { StepNavigation } from "@/components/step-navigation";
 
-// import { ILawyer } from "@/interfaces/ILawyer";
-
 import { toast } from "sonner";
 
 import CaseDetailsForm from "./case-details-form";
@@ -57,21 +55,21 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
   });
 
   const { execute: executeCreateCase } = useServerAction(createCase, {
-    onError: ({ err }) => console.log({ err }),
+    onError: ({ err }) => console.log({ err, step: "createCase" }),
   });
 
   const { execute: executeCreateClient } = useServerAction(createClient, {
-    onError: ({ err }) => console.log({ err }),
+    onError: ({ err }) => console.log({ err, step: "createClient" }),
   });
 
   const { execute: executeCreateAddress } = useServerAction(createAddress, {
-    onError: ({ err }) => console.log({ err }),
+    onError: ({ err }) => console.log({ err, step: "createAddress" }),
   });
-  
+
   const { execute: executeCreateCaseClient } = useServerAction(
     createCaseClient,
     {
-      onError: ({ err }) => console.log({ err }),
+      onError: ({ err }) => console.log({ err, step: "createCaseClient" }),
     }
   );
 
@@ -130,6 +128,7 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
         ...caseDetails,
         status: "IN_PROGRESS",
       });
+
       if (!createdCase) throw new Error("Erro ao criar caso");
 
       const [client] = await executeCreateClient(clientDetails);

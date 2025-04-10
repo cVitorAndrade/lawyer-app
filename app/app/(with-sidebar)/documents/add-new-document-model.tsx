@@ -4,10 +4,11 @@ import { HTMLAttributes, ReactNode, useState } from "react";
 import DocumentModelDetailsForm from "./document-model-details-form";
 import UploadDocumentModelFile from "./upload-document-model-file";
 import { toast } from "sonner";
-import { UploadService } from "@/service/upload.service";
 import { createDocumentModel } from "@/actions/document-model/create-document-mode";
 import { revalidate } from "@/actions/revalidate-path";
 import { usePathname } from "next/navigation";
+import { uploadDocumentModelFile } from "@/actions/document-model-file/upload-document-model-file";
+import { useServerAction } from "zsa-react";
 
 interface AddNewDocumentModelProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -98,26 +99,22 @@ export default function AddNewDocumentModel({
     );
   };
 
-  const onUploadDocumentFile = async (documentModelId: string) => {
-    await Promise.all(
-      filesToUpload
-        .filter(({ status }) => status !== "success")
-        .map(async ({ file, id }) => {
-          updateFileStatus(id, { status: "pending", progress: 0 });
+  const { execute: executeUploadDocumentModelfile } = useServerAction(uploadDocumentModelFile);
 
-          try {
-            await UploadService.uploadDocumentFile(
-              documentModelId,
-              file,
-              (progress) => updateFileStatus(id, { progress })
-            );
-            updateFileStatus(id, { status: "success" });
-            toast.success(`O arquivo ${file.name} foi enviado com sucesso!`);
-          } catch {
-            updateFileStatus(id, { status: "error" });
-          }
-        })
-    );
+  const onUploadDocumentFile = async (documentModelId: string) => {
+    for (const { file, id } of filesToUpload.filter(
+      ({ status }) => status !== "success"
+    )) {
+      updateFileStatus(id, { status: "pending", progress: 0 });
+
+      try {
+        await executeUploadDocumentModelfile({ documentModelId, file });
+        updateFileStatus(id, { status: "success", progress: 100 });
+        toast.success(`O arquivo ${file.name} foi enviado com sucesso!`);
+      } catch {
+        updateFileStatus(id, { status: "error", progress: 0 });
+      }
+    }
   };
 
   const onCloseModal = () => {
