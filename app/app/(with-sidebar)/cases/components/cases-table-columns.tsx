@@ -155,7 +155,7 @@ export const columns: ColumnDef<ICase>[] = [
                 <Avatar className="h-8 w-8 rounded-full border-2 border-white">
                   <AvatarImage src={getAvatarUrl(avatar)} alt={name} />
                   <AvatarFallback className="rounded-lg">
-                    {getAvatarFallback(row.original.createdBy.name)}
+                    {getAvatarFallback(name)}
                   </AvatarFallback>
                 </Avatar>
               </TooltipTrigger>
