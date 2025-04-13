@@ -1,4 +1,5 @@
 import { acceptCaseInvitation } from "@/actions/invite/accept-case-invitation";
+import { rejectCaseInvitation } from "@/actions/invite/reject-case-invitation";
 import { Notification } from "@/components/notification";
 import { Button } from "@/components/ui/button";
 import { NotificationType } from "@/schemas/notification";
@@ -36,6 +37,23 @@ export default function InviteNotification({
     }
   );
 
+  const { execute: executeRejectCaseInvitation } = useServerAction(
+    rejectCaseInvitation,
+    {
+      onError: () => {
+        toast.error("Erro ao aceitar convite", {
+          description:
+            "Ocorreu um erro ao tentar rejeitar o convite, Por favor tente novamente mais tarde.",
+        });
+      },
+      onSuccess: () => {
+        toast.success("Convite rejeitado", {
+          description: `Você rejeitou o convite para participar do caso "${details.case.title}".`,
+        });
+      },
+    }
+  );
+
   return (
     <Notification.Root {...props}>
       <Notification.CreatorAvatar
@@ -61,7 +79,9 @@ export default function InviteNotification({
                 variant="outline"
                 size="sm"
                 onClick={async () => {
-                  await InviteService.rejectCaseInvitation(details.invite.id);
+                  await executeRejectCaseInvitation({
+                    inviteId: details.invite.id,
+                  });
                   await reloadNotifications();
                 }}
               >

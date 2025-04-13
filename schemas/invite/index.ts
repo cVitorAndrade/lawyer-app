@@ -22,3 +22,7 @@ export const createInviteOutput = z.array(inviteSchema);
 export const acceptCaseInvitationSchema = z.object({
   inviteId: z.string(),
 });
+
+export const rejectCaseInvitationSchema = z.object({
+  inviteId: z.string(),
+});
