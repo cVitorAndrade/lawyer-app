@@ -1,4 +1,5 @@
 "use client";
+import { uploadCaseFile } from "@/actions/case-file/upload-case-file";
 import { revalidate } from "@/actions/revalidate-path";
 import FileDropzone from "@/components/file-dropzone";
 import { FileToUpload } from "@/components/file-to-upload";
@@ -11,6 +12,7 @@ import { CircleHelp } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { HTMLAttributes, ReactNode, useState } from "react";
 import { toast } from "sonner";
+import { useServerAction } from "zsa-react";
 
 interface UploadNewCaseFileProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -32,6 +34,8 @@ export default function UploadNewCaseFile({
 
   const [filesToUpload, setFilesToUpload] = useState<FileToUpload[]>([]);
 
+  const { execute: executeUploadCaseFile } = useServerAction(uploadCaseFile);
+
   const updateFileStatus = (fileId: string, updates: Partial<FileToUpload>) => {
     setFilesToUpload((prevFiles) =>
       prevFiles.map((f) => (f.id === fileId ? { ...f, ...updates } : f))
@@ -39,29 +43,22 @@ export default function UploadNewCaseFile({
   };
 
   const onUploadCaseFiles = async () => {
-    try {
-      await Promise.all(
-        filesToUpload
-          .filter(({ status }) => status !== "success")
-          .map(async ({ file, id }) => {
-            updateFileStatus(id, { status: "pending", progress: 0 });
+    for (const { file, id } of filesToUpload.filter(
+      ({ status }) => status !== "success"
+    )) {
+      updateFileStatus(id, { status: "pending", progress: 0 });
 
-            try {
-              await UploadService.uploadCaseFile(caseId, file, (progress) =>
-                updateFileStatus(id, { progress })
-              );
-              updateFileStatus(id, { status: "success" });
-              toast.success(`O arquivo ${file.name} foi enviado com sucesso!`);
-            } catch {
-              updateFileStatus(id, { status: "error" });
-            }
-          })
-      );
-
-      revalidate(pathname);
-    } catch (error) {
-      console.error("UploadNewCaseFile - onUploadCaseFiles: ", error);
+      try {
+        await executeUploadCaseFile({ caseId, file });
+        updateFileStatus(id, { status: "success", progress: 100 });
+        toast.success(`O arquivo ${file.name} foi enviado com sucesso!`);
+      } catch (error) {
+        updateFileStatus(id, { status: "error", progress: 0 });
+        console.log("UploadNewCaseFile - onUploadCaseFiles: ", error);
+      }
     }
+
+    revalidate(pathname);
   };
 
   const onRemoveFile = (fileId: string) => {
