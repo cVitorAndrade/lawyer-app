@@ -1,8 +1,11 @@
+import { acceptCaseInvitation } from "@/actions/invite/accept-case-invitation";
 import { Notification } from "@/components/notification";
 import { Button } from "@/components/ui/button";
 import { NotificationType } from "@/schemas/notification";
 import { InviteService } from "@/service/invite.service";
 import { HTMLAttributes } from "react";
+import { toast } from "sonner";
+import { useServerAction } from "zsa-react";
 
 interface InviteNotificationProps extends HTMLAttributes<HTMLDivElement> {
   notification: Extract<NotificationType, { type: "invite" }>;
@@ -15,6 +18,23 @@ export default function InviteNotification({
   ...props
 }: InviteNotificationProps) {
   const { details, message, createdAt } = notification;
+
+  const { execute: executeAccepCaseInvitation } = useServerAction(
+    acceptCaseInvitation,
+    {
+      onError: () => {
+        toast.error("Erro ao aceitar convite", {
+          description:
+            "Ocorreu um erro ao tentar aceitar o convite, Por favor tente novamente mais tarde.",
+        });
+      },
+      onSuccess: () => {
+        toast.success("Convite aceito", {
+          description: `Você agora faz parte do caso "${details.case.title}". Agora você pode acessa-lo na sua tela de casos.`,
+        });
+      },
+    }
+  );
 
   return (
     <Notification.Root {...props}>
@@ -50,7 +70,9 @@ export default function InviteNotification({
               <Button
                 size="sm"
                 onClick={async () => {
-                  await InviteService.acceptCaseInvition(details.invite.id);
+                  await executeAccepCaseInvitation({
+                    inviteId: details.invite.id,
+                  });
                   await reloadNotifications();
                 }}
               >

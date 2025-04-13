@@ -18,3 +18,7 @@ export const inviteSchema = z.object({
 });
 
 export const createInviteOutput = z.array(inviteSchema);
+
+export const acceptCaseInvitationSchema = z.object({
+  inviteId: z.string(),
+});
