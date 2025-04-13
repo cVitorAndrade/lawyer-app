@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import ShowNotifications from "./show-notifications";
+import ShowNotifications from "./show-notification";
 
 import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
 
