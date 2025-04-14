@@ -1,4 +1,5 @@
 import { deleteCaseFile } from "@/actions/case-file/delete-case-file";
+import { downloadCaseFile } from "@/actions/case-file/download-case-file";
 import { revalidate } from "@/actions/revalidate-path";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -100,34 +101,27 @@ export const columns: ColumnDef<ICaseFile>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const onDownloadCaseFile = async (id: string) => {
+      const onDownloadCaseFile = async (caseFileId: string) => {
         try {
-          const response = await CaseFileService.downloadCaseFile(id);
+          const [fileData] = await downloadCaseFile({ caseFileId });
+          if (!fileData) return;
 
-          const blob = new Blob([response.data], {
-            type: response.headers["content-type"],
+          const blob = new Blob([fileData.buffer], {
+            type: fileData.contentType,
           });
 
           const url = window.URL.createObjectURL(blob);
+
           const a = document.createElement("a");
           a.href = url;
-
-          const contentDisposition = response.headers["content-disposition"];
-          let filename = "arquivo_desconhecido";
-
-          if (contentDisposition) {
-            const match = contentDisposition.match(/filename="(.+)"/);
-            if (match && match[1]) {
-              filename = match[1];
-            }
-          }
-
-          a.download = filename;
+          a.download = fileData.filename;
           document.body.appendChild(a);
           a.click();
+
+          document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
         } catch (error) {
-          console.log("FilesTableColumns - onDownloadCaseFile: ", error);
+          console.log("FilesTableColumns - onDownloadCaaseFile: ", error);
         }
       };
 
