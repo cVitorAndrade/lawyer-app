@@ -8,7 +8,7 @@ export const downloadAllDocumentModelFiles = async (id: string) => {
     const access_token = allCookies.get("access_token")?.value;
 
     const response = await fetch(
-      `${process.env.API_URL}/document-model-file/download/all/files/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/document-model-file/download/all/files/${id}`,
       {
         headers: {
           Authorization: `Bearer ${access_token}`,

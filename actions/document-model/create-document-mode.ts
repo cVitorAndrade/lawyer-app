@@ -14,14 +14,17 @@ export const createDocumentModel = async (
     const allCookies = await cookies();
     const access_token = allCookies.get("access_token")?.value;
 
-    const response = await fetch(`${process.env.API_URL}/document-model/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/document-model/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Erro ao criar documento: ${response.statusText}`);

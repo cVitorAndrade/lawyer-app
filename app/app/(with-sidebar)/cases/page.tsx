@@ -10,7 +10,7 @@ export default async function Cases() {
   const access_token = allCookies.get("access_token")?.value;
 
   try {
-    const response = await fetch(`${process.env.API_URL}/case`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/case`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },

@@ -8,7 +8,7 @@ export default async function Documents() {
   const access_token = allCookies.get("access_token")?.value;
 
   const documentModelsResponse = await fetch(
-    `${process.env.API_URL}/document-model`,
+    `${process.env.NEXT_PUBLIC_API_URL}/document-model`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,

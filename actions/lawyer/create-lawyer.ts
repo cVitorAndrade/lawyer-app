@@ -8,7 +8,7 @@ export const createLawyer = async (body: ICreateLawyer) => {
     const allCookies = await cookies();
     const access_token = allCookies.get("access_token")?.value;
 
-    const response = await fetch(`${process.env.API_URL}/lawyer/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/lawyer/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,

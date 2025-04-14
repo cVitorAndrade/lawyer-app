@@ -7,12 +7,15 @@ export const deleteDocumentModelFile = async (id: string) => {
     const allCookies = await cookies();
     const access_token = allCookies.get("access_token")?.value;
 
-    await fetch(`${process.env.API_URL}/document-model-file/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/document-model-file/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
   } catch (error) {
     console.log("Action - deleteDocumentModelFile: ", error);
   }

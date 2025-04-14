@@ -29,7 +29,6 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { onAuth } = useAuth();
   const router = useRouter();
 
   const loginSchema = z.object({
@@ -47,8 +46,16 @@ export default function LoginForm({
 
   const onSubmit = async ({ email, password }: z.infer<typeof loginSchema>) => {
     try {
-      await onAuth({ email, password });
-      toast.success("Succesful login");
+      await fetch("http://localhost:3333/signIn", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      toast.success("Login feito com sucesso");
       router.push("/app");
     } catch (error) {
       console.log("LoginForm - onSubmit: ", error);

@@ -16,7 +16,7 @@ export default async function CaseDetails({
   const access_token = allCookies.get("access_token")?.value;
 
   const caseFilesResponse = await fetch(
-    `${process.env.API_URL}/case-file/case/${id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/case-file/case/${id}`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -25,12 +25,15 @@ export default async function CaseDetails({
     }
   );
 
-  const caseDetailsResponse = await fetch(`${process.env.API_URL}/case/${id}`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-    cache: "no-store",
-  });
+  const caseDetailsResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/case/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: "no-store",
+    }
+  );
 
   const [caseFiles, caseDetails]: [ICaseFile[], ICase] = await Promise.all([
     caseFilesResponse.json(),

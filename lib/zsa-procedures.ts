@@ -4,9 +4,9 @@ import { createServerActionProcedure } from "zsa";
 
 const authFetch = (token: string) => {
   return async (path: string, init?: RequestInit) => {
-    const isUpload = init?.body instanceof FormData
-    
-    return fetch(`${process.env.API_URL}${path}`, {
+    const isUpload = init?.body instanceof FormData;
+
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
       ...init,
       headers: {
         ...(init?.headers || {}),

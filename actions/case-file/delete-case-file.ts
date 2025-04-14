@@ -7,7 +7,7 @@ export const deleteCaseFile = async (id: string) => {
     const allCookies = await cookies();
     const access_token = allCookies.get("access_token")?.value;
 
-    await fetch(`${process.env.API_URL}/case-file/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/case-file/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${access_token}`,
