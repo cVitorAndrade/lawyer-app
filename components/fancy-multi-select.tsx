@@ -11,11 +11,12 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
-import { ILawyer } from "@/interfaces/ILawyer";
-import { LawyerService } from "@/service/lawyer.service";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getAvatarFallback, getAvatarUrl } from "@/hooks/use-avatar-url";
 import { LawyerType } from "@/schemas/lawyer";
+import { useServerAction } from "zsa-react";
+import { getAllLawyers } from "@/actions/lawyer/get-all-lawyers";
+import { getLawyer } from "@/actions/lawyer/get-lawyer";
 
 interface LawyerMultiSelectProps {
   selectedLawyers: LawyerType[];
@@ -71,11 +72,16 @@ export default function LawyerMultiSelect({
     );
   });
 
+  const { execute: executeGetAllLawyers } = useServerAction(getAllLawyers);
+  const { execute: executeGetLawyer } = useServerAction(getLawyer);
+
   React.useEffect(() => {
     const onGetAllLawyers = async () => {
       try {
-        const lawyers = await LawyerService.getAllLawyers();
-        const lawyer = await LawyerService.getLawyer();
+        const [lawyers] = await executeGetAllLawyers();
+        const [lawyer] = await executeGetLawyer();
+
+        if (!lawyers || !lawyer) return;
 
         setAllLawyers(lawyers.filter((l) => l.id !== lawyer.id));
       } catch (error) {

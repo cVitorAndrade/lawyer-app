@@ -19,11 +19,14 @@ export const createLawyerSchema = z.object({
   telephone: z.string().optional(),
 });
 
-export const lawyerSchema = createLawyerSchema.extend({
+export const lawyerSchema = createLawyerSchema.omit({ password: true }).extend({
   id: z.string(),
   avatar: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
+
+export const getAllLawyersOutputSchema = z.array(lawyerSchema);
+export const getLawyerOutputSchema = lawyerSchema;
 
 export type LawyerType = z.infer<typeof LawyerSchema>;
