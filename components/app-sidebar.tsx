@@ -35,6 +35,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { LawyerService } from "@/service/lawyer.service";
+import { useServerAction } from "zsa-react";
+import { getLawyer } from "@/actions/lawyer/get-lawyer";
 
 const data = {
   user: {
@@ -203,10 +205,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: "",
   });
 
+  const { execute: executeGetLawyer } = useServerAction(getLawyer);
+
   React.useEffect(() => {
     const onGetUserDetails = async () => {
       try {
-        const user = await LawyerService.getLawyer();
+        const [user] = await executeGetLawyer();
+        if (!user) return;
+
         setUserDetails({
           username: user.username,
           avatar: user.avatar ?? "",
