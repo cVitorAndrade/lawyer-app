@@ -46,7 +46,7 @@ export default function LoginForm({
 
   const onSubmit = async ({ email, password }: z.infer<typeof loginSchema>) => {
     try {
-      await fetch("http://localhost:3333/signIn", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signIn`, {
         method: "POST",
         credentials: "include",
         headers: {
