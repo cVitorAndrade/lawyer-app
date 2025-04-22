@@ -101,7 +101,7 @@ const data = {
     },
     {
       title: "Compromissos",
-      url: "/app/appointments",
+      url: "/app/appointments/month-view",
       icon: CalendarRange,
       isActive: false,
       items: [],
