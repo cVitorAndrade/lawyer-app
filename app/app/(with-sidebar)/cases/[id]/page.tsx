@@ -4,6 +4,9 @@ import CaseDetailsSection from "./case-details-section";
 import { ICaseFile } from "@/interfaces/ICaseFile";
 import { ICase } from "@/interfaces/ICase";
 import CaseTimeLineSection from "./case-time-line-section";
+import { CalendarProvider } from "@/app/app/(with-sidebar)/appointments/contexts/calendar-context";
+import { getEvents, getUsers } from "../../appointments/requests";
+import { ClientContainer } from "../../appointments/components/client-container";
 
 export default async function CaseDetails({
   params,
@@ -40,6 +43,9 @@ export default async function CaseDetails({
     caseDetailsResponse.json(),
   ]);
 
+  const events = await getEvents();
+  const users = await getUsers();
+
   return (
     <div className="flex flex-col gap-4">
       {/* Clients Section */}
@@ -50,6 +56,9 @@ export default async function CaseDetails({
 
       {/* Files Section */}
       <CaseFilesSection caseFiles={caseFiles} caseId={id} />
+      <CalendarProvider users={users} events={events}>
+        <ClientContainer view="month" />
+      </CalendarProvider>
     </div>
   );
 }
