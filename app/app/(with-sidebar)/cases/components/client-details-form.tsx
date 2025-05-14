@@ -25,6 +25,13 @@ import {
   createClientInputSchema,
   CreateClientInputType,
 } from "@/schemas/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ClientDetailsFormProps {
   onPreviousStep: () => void;
@@ -42,6 +49,12 @@ export default function ClientDetailsForm({
       email: "",
       name: "",
       telephone: "",
+      cpf: "",
+      gender: "FEMININO",
+      motherName: "",
+      maritalStatus: "",
+      occupation: "",
+      rg: "",
     },
   });
 
@@ -76,6 +89,97 @@ export default function ClientDetailsForm({
             </FormItem>
           )}
         />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={clientDetailsForm.control}
+            name="rg"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>RG</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={clientDetailsForm.control}
+            name="cpf"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CPF</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={clientDetailsForm.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Gêneroo</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="FEMININO">Feminino</SelectItem>
+                      <SelectItem value="MASCULINO">Masculino</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={clientDetailsForm.control}
+            name="maritalStatus"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado civil</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={clientDetailsForm.control}
+            name="motherName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome da mãe</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={clientDetailsForm.control}
+            name="occupation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Profissão</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={clientDetailsForm.control}

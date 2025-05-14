@@ -1,11 +1,19 @@
 import { z } from "zod";
 import { addressSchema } from "../address";
 
+const ClientGenderEnum = z.enum(["FEMININO", "MASCULINO"]);
+
 export const createClientInputSchema = z.object({
   name: z.string().nonempty(),
   email: z.string().email(),
   birthDate: z.date(),
   telephone: z.string().nonempty(),
+  rg: z.string().nonempty(),
+  cpf: z.string().nonempty(),
+  motherName: z.string().nonempty(),
+  gender: ClientGenderEnum,
+  maritalStatus: z.string().nonempty(),
+  occupation: z.string().nonempty(),
 });
 
 export const createClientSchema = createClientInputSchema;

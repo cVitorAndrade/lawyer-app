@@ -85,6 +85,12 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
     email: "",
     name: "",
     telephone: "",
+    cpf: "",
+    gender: "FEMININO",
+    motherName: "",
+    maritalStatus: "",
+    occupation: "",
+    rg: "",
   });
 
   const [clientAddress, setClientAddress] = useState<CreateAddressInputType>({
@@ -215,7 +221,7 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
       isOpen={isOpen}
     >
       <Modal.OpenButton>{children}</Modal.OpenButton>
-      <Modal.Container className="max-w-2xl w-full">
+      <Modal.Container className="max-w-2xl w-full overflow-auto max-h-full">
         <Modal.Header>
           <Modal.Title text="Título desse meu modal" />
           <Modal.Description text="Descrição desse meu modal" />
