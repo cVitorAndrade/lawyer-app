@@ -11,6 +11,7 @@ import {
   FileStack,
   FileText,
   Frame,
+  IdCard,
   KanbanSquare,
   LayoutDashboard,
   LifeBuoy,
@@ -57,20 +58,7 @@ const data = {
       url: "/app/cases",
       icon: BriefcaseBusiness,
       isActive: false,
-      items: [
-        {
-          title: "History",
-          url: "/app/cases/history",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      items: [],
     },
     {
       title: "Documentos",
@@ -80,24 +68,18 @@ const data = {
       items: [],
     },
     {
+      title: "Clientes",
+      url: "/app/clients",
+      icon: IdCard,
+      isActive: false,
+      items: [],
+    },
+    {
       title: "Tasks",
       url: "/app/tasks",
       icon: KanbanSquare,
       isActive: false,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      items: [],
     },
     {
       title: "Compromissos",
@@ -106,29 +88,29 @@ const data = {
       isActive: false,
       items: [],
     },
-    {
-      title: "Modelos",
-      url: "#",
-      icon: FileText,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Modelos",
+    //   url: "#",
+    //   icon: FileText,
+    //   items: [
+    //     {
+    //       title: "Introduction",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Get Started",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Tutorials",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Changelog",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
     {
       title: "AI",
       url: "#",

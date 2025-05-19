@@ -1,5 +1,6 @@
 import { PhoneInput } from "@/components/phone-input";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,17 +15,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { ptBR } from "date-fns/locale";
-import {
-  createClientInputSchema,
-  CreateClientInputType,
-} from "@/schemas/client";
 import {
   Select,
   SelectContent,
@@ -32,42 +22,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import {
+  createDependentInputSchema,
+  CreateDependentInputType,
+} from "@/schemas/dependents";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
 
-interface ClientDetailsFormProps {
+interface DependentDetailsFormProps {
+  onFinish: (values: CreateDependentInputType) => void;
   onPreviousStep: () => void;
-  onFinish: (clientDetails: CreateClientInputType) => void;
 }
 
-export default function ClientDetailsForm({
-  onPreviousStep,
+export default function DependentDetailsForm({
   onFinish,
-}: ClientDetailsFormProps) {
-  const clientDetailsForm = useForm<CreateClientInputType>({
-    resolver: zodResolver(createClientInputSchema),
+  onPreviousStep,
+}: DependentDetailsFormProps) {
+  const dependentDetailsForm = useForm<CreateDependentInputType>({
+    resolver: zodResolver(createDependentInputSchema),
     defaultValues: {
       birthDate: new Date(),
-      email: "",
-      name: "",
-      telephone: "",
       cpf: "",
+      email: "",
       gender: "FEMININO",
-      motherName: "",
       maritalStatus: "",
+      motherName: "",
+      name: "",
+      observation: "",
       occupation: "",
+      relationship: "",
       rg: "",
+      telephone: "",
     },
   });
 
-  const onSubmit = async (values: CreateClientInputType) => onFinish(values);
+  const onSubmit = (values: CreateDependentInputType) => onFinish(values);
 
   return (
-    <Form {...clientDetailsForm}>
+    <Form {...dependentDetailsForm}>
       <form
-        onSubmit={clientDetailsForm.handleSubmit(onSubmit)}
+        onSubmit={dependentDetailsForm.handleSubmit(onSubmit)}
         className="flex flex-col gap-4"
       >
         <FormField
-          control={clientDetailsForm.control}
+          control={dependentDetailsForm.control}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -79,7 +82,7 @@ export default function ClientDetailsForm({
         />
 
         <FormField
-          control={clientDetailsForm.control}
+          control={dependentDetailsForm.control}
           name="email"
           render={({ field }) => (
             <FormItem>
@@ -92,7 +95,7 @@ export default function ClientDetailsForm({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="rg"
             render={({ field }) => (
               <FormItem>
@@ -104,7 +107,7 @@ export default function ClientDetailsForm({
           />
 
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="cpf"
             render={({ field }) => (
               <FormItem>
@@ -118,7 +121,7 @@ export default function ClientDetailsForm({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="gender"
             render={({ field }) => (
               <FormItem className="flex-1">
@@ -143,7 +146,7 @@ export default function ClientDetailsForm({
           />
 
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="maritalStatus"
             render={({ field }) => (
               <FormItem>
@@ -157,7 +160,7 @@ export default function ClientDetailsForm({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="motherName"
             render={({ field }) => (
               <FormItem>
@@ -169,7 +172,7 @@ export default function ClientDetailsForm({
           />
 
           <FormField
-            control={clientDetailsForm.control}
+            control={dependentDetailsForm.control}
             name="occupation"
             render={({ field }) => (
               <FormItem>
@@ -181,52 +184,66 @@ export default function ClientDetailsForm({
           />
         </div>
 
-        <FormField
-          control={clientDetailsForm.control}
-          name="birthDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Data de Nascimento</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <button
-                      type="button"
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm",
-                        !field.value && "text-gray-500"
-                      )}
-                    >
-                      {field.value
-                        ? format(field.value, "dd/MM/yyyy")
-                        : "Selecione uma data"}
-                      <CalendarIcon className="h-4 w-4 text-gray-500" />
-                    </button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    fromYear={1900}
-                    captionLayout="dropdown"
-                    toYear={new Date().getFullYear()}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    locale={ptBR}
-                    className="flex justify-center"
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 gap-4 items-end">
+          <FormField
+            control={dependentDetailsForm.control}
+            name="birthDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Data de Nascimento</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <button
+                        type="button"
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm",
+                          !field.value && "text-gray-500"
+                        )}
+                      >
+                        {field.value
+                          ? format(field.value, "dd/MM/yyyy")
+                          : "Selecione uma data"}
+                        <CalendarIcon className="h-4 w-4 text-gray-500" />
+                      </button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" className="p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      fromYear={1900}
+                      captionLayout="dropdown"
+                      toYear={new Date().getFullYear()}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      locale={ptBR}
+                      className="flex justify-center"
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={dependentDetailsForm.control}
+            name="relationship"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Parentesco</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
-          control={clientDetailsForm.control}
+          control={dependentDetailsForm.control}
           name="telephone"
           render={({ field }) => (
             <FormItem>
@@ -237,6 +254,20 @@ export default function ClientDetailsForm({
                   value={field.value || ""}
                   onChange={field.onChange}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={dependentDetailsForm.control}
+          name="observation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Observação</FormLabel>
+              <FormControl>
+                <Textarea {...field} className="resize-none" />
               </FormControl>
               <FormMessage />
             </FormItem>

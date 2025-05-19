@@ -7,7 +7,7 @@ import { StepNavigation } from "@/components/step-navigation";
 import { toast } from "sonner";
 
 import CaseDetailsForm from "./case-details-form";
-import ClientDetailsForm from "./client-details-form";
+import ClientDecisionPanel from "./client-decision-panel";
 import ClientAddressForm from "./client-address-form";
 import ChooseCaseLawyers from "./choose-case-lawyers";
 
@@ -24,7 +24,7 @@ import { createInvite } from "@/actions/invite/create-invite";
 
 import { CreateAddressInputType } from "@/schemas/address";
 import { CreateCaseInputType } from "@/schemas/case";
-import { CreateClientInputType } from "@/schemas/client";
+import { ClientType, CreateClientInputType } from "@/schemas/client";
 import { LawyerType } from "@/schemas/lawyer";
 
 interface AddNewCaseProps extends HTMLAttributes<HTMLDivElement> {
@@ -35,17 +35,20 @@ interface CaseCreationStep {
   title: string;
 }
 
-const caseCreationSteps: CaseCreationStep[] = [
-  { title: "Detalhes do caso" },
-  { title: "Dados do cliente" },
-  { title: "Endereço do cliente" },
-  { title: "Membros" },
-];
-
 export default function AddNewCase({ children }: AddNewCaseProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
+
+  const [selectedClient, setSelectedClient] = useState<ClientType | null>(null);
+  const [useNewClient, setUseNewClient] = useState<boolean>(true);
+
+  const caseCreationSteps: CaseCreationStep[] = [
+    { title: "Detalhes do caso" },
+    { title: "Dados do cliente" },
+    ...(useNewClient ? [{ title: "Endereço do cliente" }] : []),
+    { title: "Membros" },
+  ];
 
   const { execute: executeCreateInvite } = useServerAction(createInvite, {
     onError: ({ err }) => {
@@ -137,14 +140,27 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
 
       if (!createdCase) throw new Error("Erro ao criar caso");
 
+      await executeCreateInvite({
+        caseId: createdCase.id,
+        lawyers: selectedLawyersToCase,
+      });
+
+      const isUsingExistingClient = !useNewClient && selectedClient;
+      if (isUsingExistingClient) {
+        await executeCreateCaseClient({
+          caseId: createdCase.id,
+          clientId: selectedClient.id,
+        });
+
+        toast.success("Caso criado com sucesso!");
+        await revalidate(pathname);
+        return;
+      }
+
       const [client] = await executeCreateClient(clientDetails);
       if (!client) throw new Error("Erro ao criar o cliente");
 
       await Promise.all([
-        executeCreateInvite({
-          caseId: createdCase.id,
-          lawyers: selectedLawyersToCase,
-        }),
         executeCreateAddress({
           country: "Brasil",
           name: "casa",
@@ -193,16 +209,27 @@ export default function AddNewCase({ children }: AddNewCaseProps) {
 
   const formComponents = [
     <CaseDetailsForm key="case-details" onFinish={onFinishCaseDetailsStep} />,
-    <ClientDetailsForm
-      key="client-details"
+    <ClientDecisionPanel
+      key="client-decision-panel"
+      useNewClient={useNewClient}
+      setUseNewClient={setUseNewClient}
       onPreviousStep={onPreviousStep}
-      onFinish={onFinishClientDetailsStep}
+      onFinishClientDetailsForm={onFinishClientDetailsStep}
+      onFinishSelectExistingClientStep={() => {
+        onNextStep();
+      }}
+      selectedClient={selectedClient}
+      setSelectedClient={setSelectedClient}
     />,
-    <ClientAddressForm
-      key="client-address"
-      onPreviousStep={onPreviousStep}
-      onFinish={onFinishClientAddressStep}
-    />,
+    ...(useNewClient
+      ? [
+          <ClientAddressForm
+            key="client-address"
+            onPreviousStep={onPreviousStep}
+            onFinish={onFinishClientAddressStep}
+          />,
+        ]
+      : []),
     <ChooseCaseLawyers
       key="choose-lawyers"
       onFinish={onFinishChooseCaseMembersStep}
