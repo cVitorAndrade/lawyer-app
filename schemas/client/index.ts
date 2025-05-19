@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { addressSchema } from "../address";
+import { dependentSchema } from "../dependents";
+import { createCaseOutputSchema } from "../case";
 
 const ClientGenderEnum = z.enum(["FEMININO", "MASCULINO"]);
 
@@ -31,6 +33,8 @@ export const createClientOutputSchema = createClientSchema
 
 export const clientSchema = createClientOutputSchema.extend({
   address: addressSchema,
+  cases: z.array(z.lazy(() =>createCaseOutputSchema)),
+  dependents: z.array(dependentSchema),
 });
 
 export type CreateClientInputType = z.infer<typeof createClientInputSchema>;

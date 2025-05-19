@@ -31,7 +31,7 @@ export const createCaseOutputSchema = createCaseInputSchema.extend({
 
 export const caseSchema = createCaseOutputSchema.extend({
   lawyers: z.array(lawyerSchema),
-  clients: z.array(clientSchema),
+  clients: z.array(z.lazy(() => clientSchema)),
 });
 
 export type CreateCaseInputType = z.infer<typeof createCaseInputSchema>;
