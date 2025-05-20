@@ -1,13 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -16,121 +21,88 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  VisibilityState,
-  useReactTable,
-  getSortedRowModel,
-} from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-
-import { useEffect, useState } from "react";
-import { DataTablePagination } from "./client-files-table-pagination";
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
-import { useBreakpoints } from "@/hooks/use-breakpoints";
+import { DataTablePagination } from "./client-files-table-pagination";
 
-interface ClientFilesTableProps<TData, TValue> {
+interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export default function ClientFilesTable<TData, TValue>({
+export default function DataTable<TData, TValue>({
   columns,
   data,
-}: ClientFilesTableProps<TData, TValue>) {
-  const router = useRouter();
-
-  const onNavigateToCaseDetailsPage = (id: string) => {
-    router.push(`/app/cases/${id}`);
-  };
-
-  const {
-    isAtMostMobile,
-    isAtLeastTablet,
-    isAtLeastDesktop,
-    isAtLeastLargeScreen,
-    isAtLeastLargePlusScreen,
-    isAtLeastExtraLargeScreen,
-  } = useBreakpoints();
-
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    assignedUsers: isAtLeastDesktop,
-    createdBy: isAtLeastDesktop,
-    type: !isAtMostMobile,
-    priority: isAtLeastLargeScreen,
-    status: isAtLeastLargeScreen,
-    createdAt: isAtLeastLargeScreen,
-    updatedAt: isAtLeastLargePlusScreen,
-  });
+
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,
-    getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection,
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
+      sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
     },
   });
 
-  useEffect(() => {
-    setColumnVisibility({
-      assignedUsers: isAtLeastDesktop,
-      createdBy: isAtLeastDesktop,
-      type: !isAtMostMobile,
-      priority: isAtLeastLargeScreen,
-      status: isAtLeastLargeScreen,
-      createdAt: isAtLeastLargeScreen,
-      updatedAt: isAtLeastLargePlusScreen,
-    });
-  }, [
-    isAtMostMobile,
-    isAtLeastTablet,
-    isAtLeastDesktop,
-    isAtLeastLargeScreen,
-    isAtLeastLargePlusScreen,
-    isAtLeastExtraLargeScreen,
-  ]);
-
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
+          placeholder="Filtrar pelo nome do arquivo..."
           value={
-            (table.getColumn("createdBy")?.getFilterValue() as string) || ""
+            (table.getColumn("originalname")?.getFilterValue() as string) || ""
           }
           onChange={(event) =>
-            table.getColumn("createdBy")?.setFilterValue(event.target.value)
+            table.getColumn("originalname")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm w-full"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto hidden h-8 lg:flex"
+            >
               <Settings2 />
               View
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-[150px]">
+            <DropdownMenuSeparator />
             {table
               .getAllColumns()
-              .filter((column) => column.getCanHide())
+              .filter(
+                (column) =>
+                  typeof column.accessorFn !== "undefined" &&
+                  column.getCanHide()
+              )
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
@@ -148,7 +120,6 @@ export default function ClientFilesTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -175,9 +146,6 @@ export default function ClientFilesTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  //@ts-ignore
-                  onClick={() => onNavigateToCaseDetailsPage(row.original.id)}
-                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

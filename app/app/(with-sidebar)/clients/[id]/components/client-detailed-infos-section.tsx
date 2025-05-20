@@ -9,23 +9,33 @@ import { ClientType } from "@/schemas/client";
 import ClientDependentsSection from "./client-dependents-section";
 import { Separator } from "@/components/ui/separator";
 import UploadNewClientFile from "./upload-new-client-file";
+import { ClientFileType } from "@/schemas/client-file";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ClientDetailedInfosSectionProps {
   client: ClientType;
+  clientFiles: ClientFileType[];
 }
 
 export default function ClientDetailedInfosSection({
   client,
+  clientFiles,
 }: ClientDetailedInfosSectionProps) {
   return (
     <div className="col-span-3 flex flex-col gap-12 h-full shadow-md rounded-lg border p-2">
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-4">
-          <div className="flex flex-col gap-1">
-            <h2 className="font-semibold">Arquivos do cliente</h2>
-            <p className="text-sm text-neutral-600">
+      <Card>
+        <CardHeader className="flex flex-row justify-between gap-4 items-center">
+          <div className="flex flex-col space-y-1.5">
+            <CardTitle>Arquivos do cliente</CardTitle>
+            <CardDescription>
               Arquivos e documentos adicionados a este cliente
-            </p>
+            </CardDescription>
           </div>
 
           <UploadNewClientFile clientId={client.id}>
@@ -34,22 +44,22 @@ export default function ClientDetailedInfosSection({
               Adicionar arquivo
             </Button>
           </UploadNewClientFile>
-        </div>
+        </CardHeader>
 
-        <ClientFilesTable data={[]} columns={columns} />
-      </div>
+        <CardContent>
+          <ClientFilesTable data={clientFiles} columns={columns} />
+        </CardContent>
+      </Card>
 
-      <Separator />
-
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-4">
-          <div className="flex flex-col gap-1">
-            <h2 className="font-semibold">Dependentes do cliente</h2>
-            <p className="text-sm text-neutral-600">
+      <Card>
+        <CardHeader className="flex flex-row justify-between gap-4 items-center">
+          <div className="flex flex-col space-y-1.5">
+            <CardTitle>Dependentes do cliente</CardTitle>
+            <CardDescription>
               Consulte os dependentes vinculados ao cliente e visualize
               rapidamente suas informações essenciais, facilitando o
               entendimento completo do contexto familiar no caso.
-            </p>
+            </CardDescription>
           </div>
 
           <AddNewDependent clientAddress={client.address} clientId={client.id}>
@@ -58,10 +68,12 @@ export default function ClientDetailedInfosSection({
               Adicionar dependente
             </Button>
           </AddNewDependent>
-        </div>
+        </CardHeader>
 
-        <ClientDependentsSection dependents={client.dependents} />
-      </div>
+        <CardContent>
+          <ClientDependentsSection dependents={client.dependents} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
