@@ -9,7 +9,7 @@ export default function Tasks() {
       // className="overflow-x-auto"
       className="w-full h-full"
     >
-      <div className="h-full w-full  grid grid-cols-3">
+      <div className="h-full w-full lg:grid lg:grid-cols-3">
         <div className="flex flex-col gap-4 p-4">
           <ShowTaskDetails>
             <TaskCard.Root>
@@ -208,8 +208,8 @@ export default function Tasks() {
           </TaskCard.Root>
         </div>
 
-        <div className="bg-orange-600"></div>
-        <div className="bg-green-600"></div>
+        <div></div>
+        <div></div>
       </div>
     </div>
   );

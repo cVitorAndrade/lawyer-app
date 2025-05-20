@@ -1,5 +1,4 @@
-"use client";
-import { uploadCaseFile } from "@/actions/case-file/upload-case-file";
+import { uploadClientFile } from "@/actions/client-file/upload-client-file";
 import { revalidate } from "@/actions/revalidate-path";
 import FileDropzone from "@/components/file-dropzone";
 import { FileToUpload } from "@/components/file-to-upload";
@@ -13,9 +12,9 @@ import { HTMLAttributes, ReactNode, useState } from "react";
 import { toast } from "sonner";
 import { useServerAction } from "zsa-react";
 
-interface UploadNewCaseFileProps extends HTMLAttributes<HTMLDivElement> {
+interface UploadNewClientFileProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
-  caseId: string;
+  clientId: string;
 }
 
 interface FileToUpload {
@@ -25,15 +24,21 @@ interface FileToUpload {
   status: "pending" | "success" | "error";
 }
 
-export default function UploadNewCaseFile({
+export default function UploadNewClientFile({
   children,
-  caseId,
-}: UploadNewCaseFileProps) {
+  clientId,
+}: UploadNewClientFileProps) {
   const pathname = usePathname();
 
   const [filesToUpload, setFilesToUpload] = useState<FileToUpload[]>([]);
 
-  const { execute: executeUploadCaseFile } = useServerAction(uploadCaseFile);
+  const { execute: executeUploadClientFile } =
+    useServerAction(uploadClientFile);
+
+  const onRemoveFile = (fileId: string) => {
+    const updatedFiles = filesToUpload.filter(({ id }) => fileId !== id);
+    setFilesToUpload(updatedFiles);
+  };
 
   const updateFileStatus = (fileId: string, updates: Partial<FileToUpload>) => {
     setFilesToUpload((prevFiles) =>
@@ -41,14 +46,14 @@ export default function UploadNewCaseFile({
     );
   };
 
-  const onUploadCaseFiles = async () => {
+  const onUploadClientFiles = async () => {
     for (const { file, id } of filesToUpload.filter(
       ({ status }) => status !== "success"
     )) {
       updateFileStatus(id, { status: "pending", progress: 0 });
 
       try {
-        await executeUploadCaseFile({ caseId, file });
+        await executeUploadClientFile({ clientId, file });
         updateFileStatus(id, { status: "success", progress: 100 });
         toast.success(`O arquivo ${file.name} foi enviado com sucesso!`);
       } catch (error) {
@@ -57,21 +62,17 @@ export default function UploadNewCaseFile({
       }
     }
 
-    revalidate(pathname);
-  };
-
-  const onRemoveFile = (fileId: string) => {
-    const updatedFiles = filesToUpload.filter(({ id }) => fileId !== id);
-    setFilesToUpload(updatedFiles);
+    await revalidate(pathname);
   };
 
   return (
     <Modal.Root>
       <Modal.OpenButton>{children}</Modal.OpenButton>
-      <Modal.Container className="max-w-xl max-h-full ring-0 border-none md:max-h-[95%] overflow-auto p-4 sm:p-6">
+
+      <Modal.Container className="max-w-2xl w-full overflow-auto max-h-full">
         <Modal.Header>
-          <Modal.Title text="Enviar Arquivos para o Caso" />
-          <Modal.Description text="Faça upload de documentos e arquivos relevantes para este caso. Todos os membros terão acesso aos arquivos enviados." />
+          <Modal.Title text="Anexar arquivos ao perfil do cliente" />
+          <Modal.Description text="Selecione e envie documentos importantes relacionados a este cliente. Você pode anexar arquivos como RG, CPF, comprovantes ou outros documentos relevantes. show" />
         </Modal.Header>
 
         <div className="flex flex-col gap-4">
@@ -120,7 +121,7 @@ export default function UploadNewCaseFile({
               <Modal.CloseButton asChild>
                 <Button variant="outline">Cancelar</Button>
               </Modal.CloseButton>
-              <Button onClick={onUploadCaseFiles}>Fazer upload</Button>
+              <Button onClick={onUploadClientFiles}>Fazer upload</Button>
             </div>
           </div>
         </Modal.Footer>

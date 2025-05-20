@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import AddNewDependent from "./add-new-dependent";
 import { ClientType } from "@/schemas/client";
 import ClientDependentsSection from "./client-dependents-section";
+import { Separator } from "@/components/ui/separator";
+import UploadNewClientFile from "./upload-new-client-file";
 
 interface ClientDetailedInfosSectionProps {
   client: ClientType;
@@ -15,13 +17,29 @@ interface ClientDetailedInfosSectionProps {
 export default function ClientDetailedInfosSection({
   client,
 }: ClientDetailedInfosSectionProps) {
-  console.log({ client });
   return (
-    <div className="col-span-3 flex flex-col gap-4 h-full shadow-md rounded-lg border p-2">
-      <div>
-        <h3>Documentos do cliente</h3>
+    <div className="col-span-3 flex flex-col gap-12 h-full shadow-md rounded-lg border p-2">
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="font-semibold">Arquivos do cliente</h2>
+            <p className="text-sm text-neutral-600">
+              Arquivos e documentos adicionados a este cliente
+            </p>
+          </div>
+
+          <UploadNewClientFile clientId={client.id}>
+            <Button variant="default">
+              <Plus />
+              Adicionar arquivo
+            </Button>
+          </UploadNewClientFile>
+        </div>
+
         <ClientFilesTable data={[]} columns={columns} />
       </div>
+
+      <Separator />
 
       <div className="flex flex-col gap-6">
         <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-4">
