@@ -28,10 +28,10 @@ interface LawyerClientsSectionProps {
 export default function LawyerClientsSection({
   clients,
 }: LawyerClientsSectionProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
       {clients.map(({ id, name, occupation, birthDate, dependents, cases }) => (
         <div
           className="border rounded-lg shadow-md p-2 flex flex-col gap-4"
@@ -39,12 +39,12 @@ export default function LawyerClientsSection({
         >
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src="https://github.com/maykbrito.png" />
+              {/* <AvatarImage src="https://github.com/maykbrito.png" /> */}
               <AvatarFallback>{getAvatarFallback(name)}</AvatarFallback>
             </Avatar>
 
             <div>
-              <h2 className="text-lg font-medium">Carlos Vitor</h2>
+              <h2 className="text-lg font-medium">{name}</h2>
               <div className="text-neutral-500 text-xs flex gap-2">
                 <div>
                   <div className="flex gap-2 items-center">
@@ -88,16 +88,9 @@ export default function LawyerClientsSection({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => router.push(`/app/clients/${id}`) }
-                // onClick={() =>
-                //   startDownloadTransition(
-                //     async () => await onDonwloadAllDocumentModelFiles(id)
-                //   )
-                // }
-                // disabled={isDownloading}
+                onClick={() => router.push(`/app/clients/${id}`)}
               >
                 <ArrowUpRight />{" "}
-                {/* {isDownloading ? "Baixando arquivos..." : "Baixar arquivos"} */}
                 Ver mais detalhes
               </Button>
             </div>
@@ -109,23 +102,6 @@ export default function LawyerClientsSection({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-48 p-1 flex flex-col gap-0.5">
-                <Button
-                  className="w-full justify-start text-primary"
-                  variant="outline"
-                  // onClick={() => router.push(`/app/documents/${id}`)}
-                >
-                  <FolderOpen />
-                  Abrir modelo
-                </Button>
-
-                <Button
-                  className="w-full justify-start  text-red-600"
-                  variant="outline"
-                  // onClick={() => startTransition(() => deleteDocumentModel(id))}
-                  // disabled={isPending}
-                >
-                  {/* <Trash /> {isPending ? "Apagando..." : "Apagar modelo"} */}
-                </Button>
               </PopoverContent>
             </Popover>
           </div>
